@@ -10,7 +10,7 @@ const config = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: 'sound_modules.js'
+    filename: 'sound_objects.js'
   },
   plugins: [
     // Add your plugins here

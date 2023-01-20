@@ -1,7 +1,9 @@
 import { FM } from "../mod/fm";
-export const FM_comp1 = _FM_comp1;
 
-function _FM_comp1(opts) {
+//ACIM - Additive Carriers and Independent Modulator
+export const FM_acim = _FM_acim;
+
+function _FM_acim(opts) {
     Object.assign(this, {
         mod: Object.assign({}, opts || {}),
         init: _init.bind(this),
@@ -33,7 +35,7 @@ function _init(config) {
         m1, m2
     });
 
-    window.FM = this.mod;
+    window.FM_acim = this.mod;
 }
 
 function _start(config) {
