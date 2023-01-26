@@ -10,16 +10,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__),\n/* harmony export */   \"instruments\": () => (/* binding */ instruments),\n/* harmony export */   \"patches\": () => (/* binding */ patches)\n/* harmony export */ });\n/* harmony import */ var _mod_am__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mod\\am */ \"./src/mod/am.js\");\n/* harmony import */ var _mod_fm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mod\\fm */ \"./src/mod/fm.js\");\n/* harmony import */ var _mod_rm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mod\\rm */ \"./src/mod/rm.js\");\n/* harmony import */ var _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./inst\\fm_2c1m */ \"./src/inst/fm_2c1m.js\");\n/* harmony import */ var _inst_fm_acim__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./inst\\fm_acim */ \"./src/inst/fm_acim.js\");\nvar _dirImport = {};\n\n\n\n_dirImport.rm = _mod_rm__WEBPACK_IMPORTED_MODULE_2__\n_dirImport.fm = _mod_fm__WEBPACK_IMPORTED_MODULE_1__\n_dirImport.am = _mod_am__WEBPACK_IMPORTED_MODULE_0__\nvar patches = _dirImport;\nvar _dirImport2 = {};\n\n\n_dirImport2.fmAcim = _inst_fm_acim__WEBPACK_IMPORTED_MODULE_4__\n_dirImport2.fm2c1m = _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_3__\nvar instruments = _dirImport2;\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\n  patches: patches,\n  instruments: instruments\n});\n\n//# sourceURL=webpack://sound-modules/./src/index.js?");
-
-/***/ }),
-
 /***/ "./src/inst/fm_2c1m.js":
 /*!*****************************!*\
   !*** ./src/inst/fm_2c1m.js ***!
@@ -67,6 +57,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"RM\": () => (/* binding */ RM)\n/* harmony export */ });\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ \"./src/utils.js\");\n\nvar RM = _RM;\nfunction _RM(opts) {\n  return Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      carrier_freq: 220,\n      modulator_freq: 10,\n      carrier_g: .8,\n      modulator_g: 2\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\nfunction _init(config) {\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var carrier = ctx.createOscillator(),\n    c_g = ctx.createGain(),\n    modulator = ctx.createOscillator(),\n    m_g = ctx.createGain();\n  carrier.frequency.value = this.opts.carrier_freq;\n  this.opts.carrier_freq_param = carrier.frequency;\n  modulator.frequency.value = this.opts.modulator_freq;\n  this.opts.modulator_freq_param = modulator.frequency;\n  c_g.gain.value = this.opts.carrier_g;\n  this.opts.carrier_g_param = c_g.gain;\n  m_g.gain.value = this.opts.modulator_g;\n  this.opts.modulator_g_param = m_g.gain;\n  modulator.connect(m_g).connect(c_g);\n  carrier.connect(c_g).connect(master_g);\n  Object.assign(this.mod, {\n    carrier: carrier,\n    c_g: c_g,\n    modulator: modulator,\n    m_g: m_g\n  });\n  window.RM = this.mod;\n  return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.get_docfrag)(this, config);\n}\nfunction _start(config) {\n  var _this$mod = this.mod,\n    carrier = _this$mod.carrier,\n    modulator = _this$mod.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.start();\n  });\n}\nfunction _stop(config) {\n  var _this$mod2 = this.mod,\n    carrier = _this$mod2.carrier,\n    modulator = _this$mod2.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.stop();\n  });\n}\n\n//# sourceURL=webpack://sound-modules/./src/mod/rm.js?");
+
+/***/ }),
+
+/***/ "./src/test.js":
+/*!*********************!*\
+  !*** ./src/test.js ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _mod_am__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mod/am */ \"./src/mod/am.js\");\n/* harmony import */ var _mod_rm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mod/rm */ \"./src/mod/rm.js\");\n/* harmony import */ var _mod_fm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mod/fm */ \"./src/mod/fm.js\");\n/* harmony import */ var _inst_fm_acim__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./inst/fm_acim */ \"./src/inst/fm_acim.js\");\n/* harmony import */ var _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./inst/fm_2c1m */ \"./src/inst/fm_2c1m.js\");\n\n\n\n\n\nvar\n///////////\nMOD_MAP = {\n  am: _mod_am__WEBPACK_IMPORTED_MODULE_0__.AM,\n  rm: _mod_rm__WEBPACK_IMPORTED_MODULE_1__.RM,\n  fm: _mod_fm__WEBPACK_IMPORTED_MODULE_2__.FM,\n  fm_acim: _inst_fm_acim__WEBPACK_IMPORTED_MODULE_3__.FM_acim,\n  fm_2c1m: _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_4__.FM_2c1m\n};\nvar conf = {};\nwindow.addEventListener('load', loaded);\nfunction loaded() {\n  var start_bt = document.querySelector('.trigger-btn'),\n    select_box = document.querySelector('.selector'),\n    controls = document.querySelector('.controls');\n  select_box.innerHTML = Object.keys(MOD_MAP).map(function (mod_key) {\n    return '<option value=\"' + mod_key + '\">' + mod_key + '</option>';\n  }).join(\"\");\n  select_box.selectedIndex = 0;\n  var mod = {},\n    init = function init() {},\n    start = function start() {},\n    stop = function stop() {},\n    onchange = function onchange() {\n      mod = new MOD_MAP[select_box.value]();\n      init = mod.init;\n      start = mod.start;\n      stop = mod.stop;\n    };\n  select_box.addEventListener('change', onchange);\n  onchange();\n  var STARTED = false;\n  var mg, ctx;\n  start_bt.addEventListener('click', function () {\n    if (!STARTED) {\n      conf.ctx = conf.ctx || new AudioContext();\n      conf.master_g = conf.master_g || conf.ctx.createGain();\n      conf.master_g.connect(conf.ctx.destination);\n      mg = conf.master_g;\n      ctx = conf.ctx;\n      console.info(\"Init module...\");\n      var doc_frag = init(conf);\n      while (controls.firstChild) {\n        controls.removeChild(controls.firstChild);\n      }\n      controls.appendChild(doc_frag);\n      console.info(\"Starting module...\");\n      mg.gain.setValueAtTime(0.0000001, ctx.currentTime);\n      start(conf);\n      mg.gain.exponentialRampToValueAtTime(1, ctx.currentTime + .25);\n    } else {\n      console.info(\"Stopping module...\");\n      mg.gain.setValueAtTime(mg.gain.value, ctx.currentTime);\n      mg.gain.exponentialRampToValueAtTime(.000000001, ctx.currentTime + .25);\n      setTimeout(function () {\n        stop(conf);\n        conf.master_g.disconnect();\n      }, 300);\n    }\n    STARTED = !STARTED;\n    select_box.disabled = STARTED;\n  });\n}\n\n//# sourceURL=webpack://sound-modules/./src/test.js?");
 
 /***/ }),
 
@@ -140,7 +140,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/test.js");
 /******/ 	
 /******/ })()
 ;

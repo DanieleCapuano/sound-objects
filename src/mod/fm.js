@@ -52,7 +52,7 @@ function _init(config) {
             modulator.frequency.value = mod_freq || modulator.frequency.value;
             d.gain.value = modulator.frequency.value * ratio;
         },
-        change_i_exp: (ratio, t_secs, mod_freq) => {
+        change_i_exp: (ratio, mod_freq, t_secs) => {
             modulator.frequency.value = mod_freq || modulator.frequency.value;
             let _g = modulator.frequency.value * ratio;
             d.gain.cancelScheduledValues(ctx.currentTime);
@@ -68,6 +68,7 @@ function _init(config) {
             let mod_freq = (c_freq * modulator.frequency.value) / carrier.frequency.value,
                 ratio_tobe_kept = d.gain.value / modulator.frequency.value;
             this.mod.change_i(ratio_tobe_kept, mod_freq);
+            return { mod_freq, ratio_tobe_kept };
         },
         change_pitch_exp: (c_freq, t_secs) => {
             carrier.frequency.setValueAtTime(carrier.frequency.value, ctx.currentTime);
@@ -78,7 +79,8 @@ function _init(config) {
             //of course to prevent a change in modulation index we must change d as well keeping the old ratio
             let mod_freq = (c_freq * modulator.frequency.value) / carrier.frequency.value,
                 ratio_tobe_kept = d.gain.value / modulator.frequency.value;
-            this.mod.change_i_exp(ratio_tobe_kept, t_secs, mod_freq);
+            this.mod.change_i_exp(ratio_tobe_kept, mod_freq, t_secs);
+            return { mod_freq, ratio_tobe_kept };
         }
     });
 
@@ -120,8 +122,9 @@ function custom_docfrag_nodes(o, config) {
                 inp.setAttribute('step', opt === "time" ? '1' : '0.1');
 
                 inp.addEventListener('change', () => {
-                    let t = parseInt(document.querySelector('.change-i > .time > .input-val').value),
-                        ratio_val = document.querySelector('.change-i > .ratio > .input-val').value,
+                    let me_container = get_controls_div(container),
+                        t = parseInt(me_container.querySelector('.change-i > .time > .input-val').value),
+                        ratio_val = parseFloat(me_container.querySelector('.change-i > .ratio > .input-val').value),
                         mod_freq = o.mod.modulator.frequency.value;
                     o.mod[t ? "change_i_exp" : "change_i"](ratio_val, mod_freq, t);
                 });
@@ -154,9 +157,17 @@ function custom_docfrag_nodes(o, config) {
                 inp.setAttribute('step', opt === 'time' ? '1' : '0.1');
 
                 inp.addEventListener('change', () => {
-                    let t = parseInt(document.querySelector('.change-pitch > .time > .input-val').value),
-                        carrier_freq = o.mod.carrier.frequency.value;
-                    o.mod[t ? "change_pitch_exp" : "change_pitch"](carrier_freq, t);
+                    let me_container = get_controls_div(container),
+                        t = parseInt(document.querySelector('.change-pitch > .time > .input-val').value),
+                        carrier_freq = parseFloat(me_container.querySelector('.change-pitch > .carrier_freq > .input-val').value),
+                        i_ratio_input = me_container.querySelector('.change-i > .ratio > .input-val'),
+                        mod_freq_input = me_container.querySelector('.modulator_freq > .input-val');
+
+                    const { ratio_tobe_kept, mod_freq } = o.mod[t ? "change_pitch_exp" : "change_pitch"](carrier_freq, t);
+
+                    i_ratio_input.value = ratio_tobe_kept;
+                    mod_freq_input.value = mod_freq;
+
                 });
 
                 opt_cont.appendChild(label);
@@ -183,4 +194,9 @@ function custom_docfrag_nodes(o, config) {
     });
 
     return d;
+}
+
+function get_controls_div(node) {
+    if (node.classList.contains('controls') || node.classList.contains('main-container')) return node;
+    return get_controls_div(node.parentElement);
 }

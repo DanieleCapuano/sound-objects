@@ -11,7 +11,7 @@ function _get_docfrag(o, config, custom_get) {
             return;
 
         let container = document.createElement('div');
-        container.classList.add('container');
+        container.classList.add('container', opt_key);
 
         let label = document.createElement('div');
         label.classList.add('label');

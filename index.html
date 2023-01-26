@@ -1,33 +1,64 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Sound Objects</title>
-        <style>
-            body {
-                padding: 15px;
-                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Sound Objects</h1>
-        <h3>How to use:</h3>
-        <div>
-            <ol>
-                <li>
-                    <b>Click on button below to start / stop the sound</b>
-                </li>
-                <li>
-                    <b>Change the instrument using the select box</b>
-                </li>
-            </ol>
-        </div>
 
-        <button class="trigger-btn">START / STOP</button>
-        <select class="selector"></select>
-        <div class="controls"></div>
-        <script src="dist/sound_objects.js"></script>
-    </body>
-    
+<head>
+    <meta charset="utf-8" />
+    <title>Sound Objects</title>
+    <style>
+        body {
+            padding: 15px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            display: inline-block;
+            margin: 19px;
+        }
+
+        .container>* {
+            margin-bottom: 10px;
+        }
+
+        .container.container-opts {
+            margin-left: 0;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .controls {
+            margin-top: 15px;
+        }
+
+        .controls:before {
+            content: "";
+            height: 1px;
+            width: calc(80%);
+            position: absolute;
+            background: black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sound Objects</h1>
+    <h3>How to use:</h3>
+    <div>
+        <ol>
+            <li>
+                <b>Click on button below to start / stop the sound</b>
+            </li>
+            <li>
+                <b>Change the instrument using the select box</b>
+            </li>
+        </ol>
+    </div>
+
+    <button class="trigger-btn">START / STOP</button>
+    <select class="selector"></select>
+    <div class="controls"></div>
+    <script src="dist/sound_objects_test.js"></script>
+</body>
+
 </html>

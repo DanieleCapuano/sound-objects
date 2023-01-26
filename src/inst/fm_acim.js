@@ -29,6 +29,7 @@ function _init(config) {
     const { ctx, master_g } = config;
 
     let /////////////////////////////////
+        g = ctx.createGain(),
         m1 = new FM({
             carrier_freq: this.opts.m1_carrier_freq,
             modulator_freq: this.opts.m1_modulatr_freq,
@@ -40,8 +41,7 @@ function _init(config) {
             modulator_freq: this.opts.m2_modulator_freq,
             d_gain: this.opts.m2_d_gain,
             master_g: g.gain
-        }),
-        g = ctx.createGain();
+        });
     g.gain.value = this.opts.inst_g;
 
     let m1_docfrag = m1.init(config),
@@ -81,7 +81,7 @@ function get_docfrag(o, config, m1_docfrag, m2_docfrag) {
     [m1_docfrag, m2_docfrag].forEach((df, i) => {
         let cont = document.createElement('div');
         let m_i = i + 1;
-        cont.classList.add('container', 'opt-container', 'fm-acim', 'mod-' + m_i);
+        cont.classList.add('main-container', 'opt-container', 'fm-acim', 'mod-' + m_i);
 
         let l = document.createElement('div');
         l.classList.add('label');
