@@ -6,7 +6,8 @@
 * fm
 
 **Currently done instruments**
-* a simple fm composition with additive carriers and independent modulators
+* FM ACIM - Additive Carriers and Independent Modulator
+* FM 2c1m - Two carriers with a single modulator
 
 ```
 npm run build
