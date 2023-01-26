@@ -5,7 +5,18 @@ export const FM_acim = _FM_acim;
 
 function _FM_acim(opts) {
     Object.assign(this, {
-        mod: Object.assign({}, opts || {}),
+        mod: {},
+        opts: Object.assign({
+            m1_carrier_freq: 80,
+            m1_modulatr_freq: 20,
+            m1_d_gain: 10,
+            m1_carrier_g: .8,
+            m2_carrier_freq: 120,
+            m2_modulator_freq: 22,
+            m2_d_gain: 10,
+            m2_carrier_g: .8,
+            inst_g: 1
+        }, opts || {}),
         init: _init.bind(this),
         start: _start.bind(this),
         stop: _stop.bind(this)
@@ -17,25 +28,33 @@ function _FM_acim(opts) {
 function _init(config) {
     const { ctx, master_g } = config;
 
-    let m1 = new FM({ carrier_freq: 80, modulator_freq: 20, d_gain: 10, floating_mod: true }),
-        m2 = new FM({ carrier_freq: 120, modulator_freq: 22, d_gain: 10, floating_mod: true }),
+    let /////////////////////////////////
+        m1 = new FM({
+            carrier_freq: this.opts.m1_carrier_freq,
+            modulator_freq: this.opts.m1_modulatr_freq,
+            d_gain: this.opts.m1_d_gain,
+            master_g: g
+        }),
+        m2 = new FM({
+            carrier_freq: this.opts.m2_carrier_freq,
+            modulator_freq: this.opts.m2_modulator_freq,
+            d_gain: this.opts.m2_d_gain,
+            master_g: g.gain
+        }),
         g = ctx.createGain();
+    g.gain.value = this.opts.inst_g;
 
-    m1.init(config);
-    m2.init(config);
+    let m1_docfrag = m1.init(config),
+        m2_docfrag = m2.init(config);
 
-    m1.mod.c_g.connect(g);
-    m2.mod.c_g.connect(g.gain);
-
-    if (!this.mod.floating_mod) {
-        g.connect(master_g);
-    }
+    g.connect(master_g);
 
     Object.assign(this.mod, {
         m1, m2
     });
 
     window.FM_acim = this.mod;
+    return get_docfrag(this, config, m1_docfrag, m2_docfrag);
 }
 
 function _start(config) {
@@ -55,4 +74,23 @@ function _stop(config) {
             { carrier, modulator } = mod;
         [carrier, modulator].forEach(osc => osc.stop());
     });
+}
+function get_docfrag(o, config, m1_docfrag, m2_docfrag) {
+    let d = new DocumentFragment();
+
+    [m1_docfrag, m2_docfrag].forEach((df, i) => {
+        let cont = document.createElement('div');
+        let m_i = i + 1;
+        cont.classList.add('container', 'opt-container', 'fm-acim', 'mod-' + m_i);
+
+        let l = document.createElement('div');
+        l.classList.add('label');
+        l.textContent = 'FM MOD ' + m_i;
+
+        cont.appendChild(l);
+        cont.appendChild(df);
+        d.appendChild(cont);
+    });
+
+    return d;
 }

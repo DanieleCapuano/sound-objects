@@ -17,7 +17,8 @@ const conf = {};
 window.addEventListener('load', loaded);
 function loaded() {
     const start_bt = document.querySelector('.trigger-btn'),
-        select_box = document.querySelector('.selector');
+        select_box = document.querySelector('.selector'),
+        controls = document.querySelector('.controls');
 
     select_box.innerHTML = Object.keys(MOD_MAP)
         .map(mod_key => '<option value="' + mod_key + '">' + mod_key + '</option>')
@@ -49,7 +50,11 @@ function loaded() {
             ctx = conf.ctx;
 
             console.info("Init module...");
-            init(conf);
+            let doc_frag = init(conf);
+            while (controls.firstChild) {
+                controls.removeChild(controls.firstChild);
+            }
+            controls.appendChild(doc_frag);
 
             console.info("Starting module...");
             mg.gain.setValueAtTime(0.0000001, ctx.currentTime);

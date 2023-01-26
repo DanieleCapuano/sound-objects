@@ -1,8 +1,16 @@
+import { get_docfrag } from "../utils";
+
 export const AM = _AM;
 
 function _AM(opts) {
     Object.assign(this, {
-        mod: Object.assign({}, opts || {}),
+        mod: {},
+        opts: Object.assign({
+            carrier_freq: 220,
+            modulator_freq: 10,
+            carrier_g: .8,
+            modulator_g: 2
+        }, opts || {}),
         init: _init.bind(this),
         start: _start.bind(this),
         stop: _stop.bind(this)
@@ -18,10 +26,18 @@ function _init(config) {
         modulator = ctx.createOscillator(),
         m_g = ctx.createGain();
 
-    carrier.frequency.value = 220;
-    modulator.frequency.value = 10;
+    carrier.frequency.value = this.opts.carrier_freq;
+    this.opts.carrier_freq_param = carrier.frequency;
 
-    c_g.gain.value = .8;
+    modulator.frequency.value = this.opts.modulator_freq;
+    this.opts.modulator_freq_param = modulator.frequency;
+
+    c_g.gain.value = this.opts.carrier_g;
+    this.opts.carrier_g_param = c_g.gain;
+
+    m_g.gain.value = this.opts.modulator_g;
+    this.opts.modulator_g_param = m_g.gain;
+
     modulator
         .connect(m_g)
         .connect(c_g.gain); //"audio signals from the outputs of AudioNodes can be connected to an AudioParam, ***summing*** 
@@ -38,6 +54,8 @@ function _init(config) {
     });
 
     window.AM = this.mod;
+
+    return get_docfrag(this, config);
 }
 function _start(config) {
     const { carrier, modulator } = this.mod;

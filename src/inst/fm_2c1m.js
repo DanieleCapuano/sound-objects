@@ -1,9 +1,18 @@
+import { get_docfrag } from "../utils";
+
 //2 Carriers and 1 Modulator
 export const FM_2c1m = _FM_2c1m;
 
 function _FM_2c1m(opts) {
     Object.assign(this, {
-        mod: Object.assign({}, opts || {}),
+        mod: {},
+        opts: Object.assign({
+            modulator_freq: 7,
+            d_gain: 40,
+            carrier1_freq: 200,
+            carrier2_freq: 40,
+            carrier_g: .1
+        }, opts || {}),
         init: _init.bind(this),
         start: _start.bind(this),
         stop: _stop.bind(this)
@@ -21,11 +30,20 @@ function _init(config) {
         c2 = ctx.createOscillator(),
         g = ctx.createGain();
 
-    m.frequency.value = 7;
-    d.gain.value = 40;
-    c1.frequency.value = 200;
-    c2.frequency.value = 40;
-    g.gain.value = .1;
+    m.frequency.value = this.opts.modulator_freq;
+    this.opts.modulator_freq_param = m.frequency;
+
+    d.gain.value = this.opts.d_gain;
+    this.opts.d_gain_param = d.gain;
+
+    c1.frequency.value = this.opts.carrier1_freq;
+    this.opts.carrier1_freq_param = c1.frequency;
+
+    c2.frequency.value = this.opts.carrier2_freq;
+    this.opts.carrier2_freq_param = c2.frequency;
+
+    g.gain.value = this.opts.carrier_g;
+    this.opts.carrier_g_param = g.gain;
 
     m.connect(d);
     d.connect(c1.frequency);
@@ -34,15 +52,14 @@ function _init(config) {
     c1.connect(g);
     c2.connect(g.gain);
 
-    if (!this.mod.floating_mod) {
-        g.connect(master_g);
-    }
+    g.connect(master_g);
 
     Object.assign(this.mod, {
         m, d, c1, c2, g
     });
 
     window.FM_2c1m = this.mod;
+    return get_docfrag(o, config);
 }
 
 function _start(config) {
