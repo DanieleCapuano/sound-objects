@@ -6,141 +6,39 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["soundo"] = factory();
+	else
+		root["soundo"] = factory();
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__),\n/* harmony export */   \"instruments\": () => (/* binding */ instruments),\n/* harmony export */   \"patches\": () => (/* binding */ patches)\n/* harmony export */ });\n/* harmony import */ var _mod_am__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mod\\am */ \"./src/mod/am.js\");\n/* harmony import */ var _mod_fm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mod\\fm */ \"./src/mod/fm.js\");\n/* harmony import */ var _mod_rm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mod\\rm */ \"./src/mod/rm.js\");\n/* harmony import */ var _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./inst\\fm_2c1m */ \"./src/inst/fm_2c1m.js\");\n/* harmony import */ var _inst_fm_acim__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./inst\\fm_acim */ \"./src/inst/fm_acim.js\");\nvar _dirImport = {};\n\n\n\n_dirImport.rm = _mod_rm__WEBPACK_IMPORTED_MODULE_2__\n_dirImport.fm = _mod_fm__WEBPACK_IMPORTED_MODULE_1__\n_dirImport.am = _mod_am__WEBPACK_IMPORTED_MODULE_0__\nvar patches = _dirImport;\nvar _dirImport2 = {};\n\n\n_dirImport2.fmAcim = _inst_fm_acim__WEBPACK_IMPORTED_MODULE_4__\n_dirImport2.fm2c1m = _inst_fm_2c1m__WEBPACK_IMPORTED_MODULE_3__\nvar instruments = _dirImport2;\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\n  patches: patches,\n  instruments: instruments\n});\n\n//# sourceURL=webpack://sound-modules/./src/index.js?");
-
-/***/ }),
-
-/***/ "./src/inst/fm_2c1m.js":
-/*!*****************************!*\
-  !*** ./src/inst/fm_2c1m.js ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"FM_2c1m\": () => (/* binding */ FM_2c1m)\n/* harmony export */ });\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ \"./src/utils.js\");\n\n\n//2 Carriers and 1 Modulator\nvar FM_2c1m = _FM_2c1m;\nfunction _FM_2c1m(opts) {\n  Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      modulator_freq: 7,\n      d_gain: 40,\n      carrier1_freq: 200,\n      carrier2_freq: 40,\n      carrier_g: .1\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\n\n//additive carriers with independent modulators\n\nfunction _init(config) {\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var m = ctx.createOscillator(),\n    d = ctx.createGain(),\n    c1 = ctx.createOscillator(),\n    c2 = ctx.createOscillator(),\n    g = ctx.createGain();\n  m.frequency.value = this.opts.modulator_freq;\n  this.opts.modulator_freq_param = m.frequency;\n  d.gain.value = this.opts.d_gain;\n  this.opts.d_gain_param = d.gain;\n  c1.frequency.value = this.opts.carrier1_freq;\n  this.opts.carrier1_freq_param = c1.frequency;\n  c2.frequency.value = this.opts.carrier2_freq;\n  this.opts.carrier2_freq_param = c2.frequency;\n  g.gain.value = this.opts.carrier_g;\n  this.opts.carrier_g_param = g.gain;\n  m.connect(d);\n  d.connect(c1.frequency);\n  d.connect(c2.frequency);\n  c1.connect(g);\n  c2.connect(g.gain);\n  g.connect(master_g);\n  Object.assign(this.mod, {\n    m: m,\n    d: d,\n    c1: c1,\n    c2: c2,\n    g: g\n  });\n  window.FM_2c1m = this.mod;\n  return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.get_docfrag)(this, config);\n}\nfunction _start(config) {\n  var _this$mod = this.mod,\n    m = _this$mod.m,\n    c1 = _this$mod.c1,\n    c2 = _this$mod.c2;\n  [m, c1, c2].forEach(function (osc) {\n    return osc.start();\n  });\n}\nfunction _stop(config) {\n  var _this$mod2 = this.mod,\n    m = _this$mod2.m,\n    c1 = _this$mod2.c1,\n    c2 = _this$mod2.c2;\n  [m, c1, c2].forEach(function (osc) {\n    return osc.stop();\n  });\n}\n\n//# sourceURL=webpack://sound-modules/./src/inst/fm_2c1m.js?");
-
-/***/ }),
-
-/***/ "./src/inst/fm_acim.js":
-/*!*****************************!*\
-  !*** ./src/inst/fm_acim.js ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"FM_acim\": () => (/* binding */ FM_acim)\n/* harmony export */ });\n/* harmony import */ var _mod_fm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mod/fm */ \"./src/mod/fm.js\");\n\n\n//ACIM - Additive Carriers and Independent Modulator\nvar FM_acim = _FM_acim;\nfunction _FM_acim(opts) {\n  Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      m1_carrier_freq: 80,\n      m1_modulatr_freq: 20,\n      m1_d_gain: 10,\n      m1_carrier_g: .8,\n      m2_carrier_freq: 120,\n      m2_modulator_freq: 22,\n      m2_d_gain: 10,\n      m2_carrier_g: .8,\n      inst_g: 1\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\n\n//additive carriers with independent modulators\n\nfunction _init(config) {\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var\n    /////////////////////////////////\n    g = ctx.createGain(),\n    m1 = new _mod_fm__WEBPACK_IMPORTED_MODULE_0__.FM({\n      carrier_freq: this.opts.m1_carrier_freq,\n      modulator_freq: this.opts.m1_modulatr_freq,\n      d_gain: this.opts.m1_d_gain,\n      master_g: g\n    }),\n    m2 = new _mod_fm__WEBPACK_IMPORTED_MODULE_0__.FM({\n      carrier_freq: this.opts.m2_carrier_freq,\n      modulator_freq: this.opts.m2_modulator_freq,\n      d_gain: this.opts.m2_d_gain,\n      master_g: g.gain\n    });\n  g.gain.value = this.opts.inst_g;\n  var m1_docfrag = m1.init(config),\n    m2_docfrag = m2.init(config);\n  g.connect(master_g);\n  Object.assign(this.mod, {\n    m1: m1,\n    m2: m2\n  });\n  window.FM_acim = this.mod;\n  return get_docfrag(this, config, m1_docfrag, m2_docfrag);\n}\nfunction _start(config) {\n  var _this = this;\n  Object.keys(this.mod).forEach(function (m_key) {\n    var m_n = _this.mod[m_key],\n      mod = m_n.mod,\n      carrier = mod.carrier,\n      modulator = mod.modulator;\n    [carrier, modulator].forEach(function (osc) {\n      return osc.start();\n    });\n  });\n}\nfunction _stop(config) {\n  var _this2 = this;\n  Object.keys(this.mod).forEach(function (m_key) {\n    var m_n = _this2.mod[m_key],\n      mod = m_n.mod,\n      carrier = mod.carrier,\n      modulator = mod.modulator;\n    [carrier, modulator].forEach(function (osc) {\n      return osc.stop();\n    });\n  });\n}\nfunction get_docfrag(o, config, m1_docfrag, m2_docfrag) {\n  var d = new DocumentFragment();\n  [m1_docfrag, m2_docfrag].forEach(function (df, i) {\n    var cont = document.createElement('div');\n    var m_i = i + 1;\n    cont.classList.add('main-container', 'opt-container', 'fm-acim', 'mod-' + m_i);\n    var l = document.createElement('div');\n    l.classList.add('label');\n    l.textContent = 'FM MOD ' + m_i;\n    cont.appendChild(l);\n    cont.appendChild(df);\n    d.appendChild(cont);\n  });\n  return d;\n}\n\n//# sourceURL=webpack://sound-modules/./src/inst/fm_acim.js?");
-
-/***/ }),
-
-/***/ "./src/mod/am.js":
-/*!***********************!*\
-  !*** ./src/mod/am.js ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"AM\": () => (/* binding */ AM)\n/* harmony export */ });\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ \"./src/utils.js\");\n\nvar AM = _AM;\nfunction _AM(opts) {\n  Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      carrier_freq: 220,\n      modulator_freq: 10,\n      carrier_g: .8,\n      modulator_g: 2\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\nfunction _init(config) {\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var g = ctx.createGain(),\n    carrier = ctx.createOscillator(),\n    c_g = ctx.createGain(),\n    modulator = ctx.createOscillator(),\n    m_g = ctx.createGain();\n  carrier.frequency.value = this.opts.carrier_freq;\n  this.opts.carrier_freq_param = carrier.frequency;\n  modulator.frequency.value = this.opts.modulator_freq;\n  this.opts.modulator_freq_param = modulator.frequency;\n  c_g.gain.value = this.opts.carrier_g;\n  this.opts.carrier_g_param = c_g.gain;\n  m_g.gain.value = this.opts.modulator_g;\n  this.opts.modulator_g_param = m_g.gain;\n  modulator.connect(m_g).connect(c_g.gain); //\"audio signals from the outputs of AudioNodes can be connected to an AudioParam, ***summing*** \n  //with the intrinsic parameter value.\"\n  //check https://webaudio.github.io/web-audio-api/#AudioParam\n\n  carrier.connect(c_g).connect(g).connect(master_g);\n  Object.assign(this.mod, {\n    g: g,\n    carrier: carrier,\n    c_g: c_g,\n    modulator: modulator,\n    m_g: m_g\n  });\n  window.AM = this.mod;\n  return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.get_docfrag)(this, config);\n}\nfunction _start(config) {\n  var _this$mod = this.mod,\n    carrier = _this$mod.carrier,\n    modulator = _this$mod.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.start();\n  });\n}\nfunction _stop(config) {\n  var _this$mod2 = this.mod,\n    carrier = _this$mod2.carrier,\n    modulator = _this$mod2.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.stop();\n  });\n}\n\n//# sourceURL=webpack://sound-modules/./src/mod/am.js?");
-
-/***/ }),
-
-/***/ "./src/mod/fm.js":
-/*!***********************!*\
-  !*** ./src/mod/fm.js ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"FM\": () => (/* binding */ FM)\n/* harmony export */ });\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ \"./src/utils.js\");\n\nvar FM = _FM;\nfunction _FM(opts) {\n  Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      carrier_freq: 220,\n      modulator_freq: 10,\n      d_gain: 40,\n      carrier_g: .8\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\nfunction _init(config) {\n  var _this = this;\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var carrier = ctx.createOscillator(),\n    c_g = ctx.createGain(),\n    modulator = ctx.createOscillator(),\n    d = ctx.createGain(); //frequency deviation\n\n  carrier.frequency.value = this.opts.carrier_freq; //controlled by custom dom\n\n  modulator.frequency.value = this.opts.modulator_freq; //modulation frequency\n  this.opts.modulator_freq_param = modulator.frequency;\n  d.gain.value = this.opts.d_gain; //modulation index \"i\" = d / mod_freq ==> i+1 partials\n  this.opts.d_gain_param = d.gain;\n  c_g.gain.value = this.opts.carrier_g;\n  this.opts.carrier_g_param = c_g.gain;\n  modulator.connect(d).connect(carrier.frequency); //\"audio signals from the outputs of AudioNodes can be connected to an AudioParam, ***summing*** \n  //with the intrinsic parameter value.\"\n  //check https://webaudio.github.io/web-audio-api/#AudioParam\n\n  carrier.connect(c_g).connect(master_g); //this will be the passed output module\n\n  Object.assign(this.mod, {\n    carrier: carrier,\n    c_g: c_g,\n    modulator: modulator,\n    d: d,\n    change_i: function change_i(ratio, mod_freq) {\n      modulator.frequency.value = mod_freq || modulator.frequency.value;\n      d.gain.value = modulator.frequency.value * ratio;\n    },\n    change_i_exp: function change_i_exp(ratio, mod_freq, t_secs) {\n      modulator.frequency.value = mod_freq || modulator.frequency.value;\n      var _g = modulator.frequency.value * ratio;\n      d.gain.cancelScheduledValues(ctx.currentTime);\n      d.gain.setValueAtTime(d.gain.value, ctx.currentTime);\n      d.gain.exponentialRampToValueAtTime(_g, ctx.currentTime + t_secs);\n    },\n    change_pitch: function change_pitch(c_freq) {\n      carrier.frequency.value = c_freq;\n\n      //to find the new modulator freq which respects the frequency ratio we'll use\n      //carrier_f / modulator_f = new_carrier_f / x\n      //of course to prevent a change in modulation index we must change d as well keeping the old ratio\n      var mod_freq = c_freq * modulator.frequency.value / carrier.frequency.value,\n        ratio_tobe_kept = d.gain.value / modulator.frequency.value;\n      _this.mod.change_i(ratio_tobe_kept, mod_freq);\n      return {\n        mod_freq: mod_freq,\n        ratio_tobe_kept: ratio_tobe_kept\n      };\n    },\n    change_pitch_exp: function change_pitch_exp(c_freq, t_secs) {\n      carrier.frequency.setValueAtTime(carrier.frequency.value, ctx.currentTime);\n      carrier.frequency.exponentialRampToValueAtTime(c_freq, ctx.currentTime + t_secs);\n\n      //to find the new modulator freq which respects the frequency ratio we'll use\n      //carrier_f / modulator_f = new_carrier_f / x\n      //of course to prevent a change in modulation index we must change d as well keeping the old ratio\n      var mod_freq = c_freq * modulator.frequency.value / carrier.frequency.value,\n        ratio_tobe_kept = d.gain.value / modulator.frequency.value;\n      _this.mod.change_i_exp(ratio_tobe_kept, mod_freq, t_secs);\n      return {\n        mod_freq: mod_freq,\n        ratio_tobe_kept: ratio_tobe_kept\n      };\n    }\n  });\n  window.FM = this.mod;\n  return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.get_docfrag)(this, config, custom_docfrag_nodes);\n}\nfunction _start(config) {\n  var _this$mod = this.mod,\n    carrier = _this$mod.carrier,\n    modulator = _this$mod.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.start();\n  });\n}\nfunction _stop(config) {\n  var _this$mod2 = this.mod,\n    carrier = _this$mod2.carrier,\n    modulator = _this$mod2.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.stop();\n  });\n}\nfunction custom_docfrag_nodes(o, config) {\n  var d = new DocumentFragment();\n  var\n    //////////////////////////\n    _change_i_inputs = function _change_i_inputs() {\n      var container = document.createElement('div');\n      container.classList.add('container', 'container-opts', 'change-i');\n      ['ratio', 'time'].forEach(function (opt) {\n        var opt_cont = document.createElement('div');\n        opt_cont.classList.add('opt-container', opt);\n        var label = document.createElement('div');\n        label.textContent = opt;\n        var inp = document.createElement('input');\n        inp.classList.add('input-val');\n        inp.value = opt === 'ratio' ? o.mod.d.gain.value / o.mod.modulator.frequency.value : 0.0;\n        inp.setAttribute('type', 'number');\n        inp.setAttribute('min', '0');\n        inp.setAttribute('step', opt === \"time\" ? '1' : '0.1');\n        inp.addEventListener('change', function () {\n          var me_container = get_controls_div(container),\n            t = parseInt(me_container.querySelector('.change-i > .time > .input-val').value),\n            ratio_val = parseFloat(me_container.querySelector('.change-i > .ratio > .input-val').value),\n            mod_freq = o.mod.modulator.frequency.value;\n          o.mod[t ? \"change_i_exp\" : \"change_i\"](ratio_val, mod_freq, t);\n        });\n        opt_cont.appendChild(label);\n        opt_cont.appendChild(inp);\n        container.appendChild(opt_cont);\n      });\n      return container;\n    },\n    _change_pitch_inputs = function _change_pitch_inputs() {\n      var container = document.createElement('div');\n      container.classList.add('container', 'container-opts', 'change-pitch');\n      ['carrier_freq', 'time'].forEach(function (opt) {\n        var opt_cont = document.createElement('div');\n        opt_cont.classList.add('opt-container', opt);\n        var label = document.createElement('div');\n        label.textContent = opt;\n        var inp = document.createElement('input');\n        inp.classList.add('input-val');\n        inp.value = opt === 'carrier_freq' ? o.mod.carrier.frequency.value : 0.0;\n        inp.setAttribute('type', 'number');\n        inp.setAttribute('min', '0');\n        inp.setAttribute('step', opt === 'time' ? '1' : '0.1');\n        inp.addEventListener('change', function () {\n          var me_container = get_controls_div(container),\n            t = parseInt(document.querySelector('.change-pitch > .time > .input-val').value),\n            carrier_freq = parseFloat(me_container.querySelector('.change-pitch > .carrier_freq > .input-val').value),\n            i_ratio_input = me_container.querySelector('.change-i > .ratio > .input-val'),\n            mod_freq_input = me_container.querySelector('.modulator_freq > .input-val');\n          var _o$mod = o.mod[t ? \"change_pitch_exp\" : \"change_pitch\"](carrier_freq, t),\n            ratio_tobe_kept = _o$mod.ratio_tobe_kept,\n            mod_freq = _o$mod.mod_freq;\n          i_ratio_input.value = ratio_tobe_kept;\n          mod_freq_input.value = mod_freq;\n        });\n        opt_cont.appendChild(label);\n        opt_cont.appendChild(inp);\n        container.appendChild(opt_cont);\n      });\n      return container;\n    };\n  ['change_i', 'change_pitch'].forEach(function (opt_key) {\n    var container = document.createElement('div');\n    container.classList.add('container');\n    var label = document.createElement('div');\n    label.classList.add('label');\n    label.textContent = opt_key;\n    var fn_container = opt_key === 'change_i' ? _change_i_inputs() : _change_pitch_inputs();\n    container.appendChild(label);\n    container.appendChild(fn_container);\n    d.appendChild(container);\n  });\n  return d;\n}\nfunction get_controls_div(node) {\n  if (node.classList.contains('controls') || node.classList.contains('main-container')) return node;\n  return get_controls_div(node.parentElement);\n}\n\n//# sourceURL=webpack://sound-modules/./src/mod/fm.js?");
-
-/***/ }),
-
-/***/ "./src/mod/rm.js":
-/*!***********************!*\
-  !*** ./src/mod/rm.js ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"RM\": () => (/* binding */ RM)\n/* harmony export */ });\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ \"./src/utils.js\");\n\nvar RM = _RM;\nfunction _RM(opts) {\n  return Object.assign(this, {\n    mod: {},\n    opts: Object.assign({\n      carrier_freq: 220,\n      modulator_freq: 10,\n      carrier_g: .8,\n      modulator_g: 2\n    }, opts || {}),\n    init: _init.bind(this),\n    start: _start.bind(this),\n    stop: _stop.bind(this)\n  });\n}\nfunction _init(config) {\n  var ctx = config.ctx,\n    master_g = config.master_g;\n  var carrier = ctx.createOscillator(),\n    c_g = ctx.createGain(),\n    modulator = ctx.createOscillator(),\n    m_g = ctx.createGain();\n  carrier.frequency.value = this.opts.carrier_freq;\n  this.opts.carrier_freq_param = carrier.frequency;\n  modulator.frequency.value = this.opts.modulator_freq;\n  this.opts.modulator_freq_param = modulator.frequency;\n  c_g.gain.value = this.opts.carrier_g;\n  this.opts.carrier_g_param = c_g.gain;\n  m_g.gain.value = this.opts.modulator_g;\n  this.opts.modulator_g_param = m_g.gain;\n  modulator.connect(m_g).connect(c_g);\n  carrier.connect(c_g).connect(master_g);\n  Object.assign(this.mod, {\n    carrier: carrier,\n    c_g: c_g,\n    modulator: modulator,\n    m_g: m_g\n  });\n  window.RM = this.mod;\n  return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.get_docfrag)(this, config);\n}\nfunction _start(config) {\n  var _this$mod = this.mod,\n    carrier = _this$mod.carrier,\n    modulator = _this$mod.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.start();\n  });\n}\nfunction _stop(config) {\n  var _this$mod2 = this.mod,\n    carrier = _this$mod2.carrier,\n    modulator = _this$mod2.modulator;\n  [carrier, modulator].forEach(function (osc) {\n    return osc.stop();\n  });\n}\n\n//# sourceURL=webpack://sound-modules/./src/mod/rm.js?");
-
-/***/ }),
-
-/***/ "./src/utils.js":
-/*!**********************!*\
-  !*** ./src/utils.js ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"get_docfrag\": () => (/* binding */ get_docfrag)\n/* harmony export */ });\nvar get_docfrag = _get_docfrag;\nfunction _get_docfrag(o, config, custom_get) {\n  var ctx = config.ctx;\n  var d = new DocumentFragment();\n  Object.keys(o.opts).forEach(function (opt_key) {\n    var opt_val = o.opts[opt_key];\n    var pm = o.opts[opt_key + '_param'];\n    if (!pm)\n      //the called doesn't want this option to generate a dom control\n      return;\n    var container = document.createElement('div');\n    container.classList.add('container', opt_key);\n    var label = document.createElement('div');\n    label.classList.add('label');\n    label.textContent = opt_key;\n    var input = document.createElement('input');\n    input.classList.add('input-val');\n    input.setAttribute('type', 'number');\n    input.setAttribute('min', '0');\n    input.setAttribute('step', '0.1');\n    input.value = opt_val;\n    input.addEventListener('change', function () {\n      var param = o.opts[opt_key + '_param'];\n      if (!param) return;\n      param.cancelScheduledValues(ctx.currentTime);\n      param.setValueAtTime(input.value, ctx.currentTime);\n    });\n    container.appendChild(label);\n    container.appendChild(input);\n    d.appendChild(container);\n  });\n  if (custom_get) {\n    d.appendChild(custom_get(o, config));\n  }\n  return d;\n}\n\n//# sourceURL=webpack://sound-modules/./src/utils.js?");
+eval("throw new Error(\"Module build failed (from ./node_modules/babel-loader/lib/index.js):\\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'babel-plugin-import-directory' imported from D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\babel-virtual-resolve-base.js\\n    at new NodeError (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:2240:5)\\n    at packageResolve (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:2776:9)\\n    at moduleResolve (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:2804:18)\\n    at defaultResolve (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:2835:13)\\n    at D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:2855:14\\n    at Generator.next (<anonymous>)\\n    at asyncGeneratorStep (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:45:103)\\n    at _next (D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:46:194)\\n    at D:\\\\dev\\\\GIT_REPOS\\\\GIT_PUBLIC_REPOS\\\\sound-objects\\\\node_modules\\\\@babel\\\\core\\\\lib\\\\vendor\\\\import-meta-resolve.js:46:364\\n    at new Promise (<anonymous>)\");\n\n//# sourceURL=webpack://soundo/./src/index.js?");
 
 /***/ })
 
 /******/ 	});
 /************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.js");
+/******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./src/index.js"]();
 /******/ 	
+/******/ 	return __webpack_exports__;
 /******/ })()
 ;
+});

@@ -51,6 +51,8 @@ function _init(config) {
         change_i: (ratio, mod_freq) => {
             modulator.frequency.value = mod_freq || modulator.frequency.value;
             d.gain.value = modulator.frequency.value * ratio;
+
+            return { d_gain: d.gain.value };
         },
         change_i_exp: (ratio, mod_freq, t_secs) => {
             modulator.frequency.value = mod_freq || modulator.frequency.value;
@@ -58,6 +60,8 @@ function _init(config) {
             d.gain.cancelScheduledValues(ctx.currentTime);
             d.gain.setValueAtTime(d.gain.value, ctx.currentTime);
             d.gain.exponentialRampToValueAtTime(_g, ctx.currentTime + t_secs);
+
+            return { d_gain: d.gain.value };
         },
         change_pitch: (c_freq) => {
             carrier.frequency.value = c_freq;
@@ -67,8 +71,8 @@ function _init(config) {
             //of course to prevent a change in modulation index we must change d as well keeping the old ratio
             let mod_freq = (c_freq * modulator.frequency.value) / carrier.frequency.value,
                 ratio_tobe_kept = d.gain.value / modulator.frequency.value;
-            this.mod.change_i(ratio_tobe_kept, mod_freq);
-            return { mod_freq, ratio_tobe_kept };
+            let { d_gain } = this.mod.change_i(ratio_tobe_kept, mod_freq);
+            return { mod_freq, ratio_tobe_kept, d_gain };
         },
         change_pitch_exp: (c_freq, t_secs) => {
             carrier.frequency.setValueAtTime(carrier.frequency.value, ctx.currentTime);
@@ -79,8 +83,8 @@ function _init(config) {
             //of course to prevent a change in modulation index we must change d as well keeping the old ratio
             let mod_freq = (c_freq * modulator.frequency.value) / carrier.frequency.value,
                 ratio_tobe_kept = d.gain.value / modulator.frequency.value;
-            this.mod.change_i_exp(ratio_tobe_kept, mod_freq, t_secs);
-            return { mod_freq, ratio_tobe_kept };
+            let { d_gain } = this.mod.change_i_exp(ratio_tobe_kept, mod_freq, t_secs);
+            return { mod_freq, ratio_tobe_kept, d_gain };
         }
     });
 
@@ -125,8 +129,11 @@ function custom_docfrag_nodes(o, config) {
                     let me_container = get_controls_div(container),
                         t = parseInt(me_container.querySelector('.change-i > .time > .input-val').value),
                         ratio_val = parseFloat(me_container.querySelector('.change-i > .ratio > .input-val').value),
+                        d_input = me_container.querySelector('.d_gain > .input-val'),
                         mod_freq = o.mod.modulator.frequency.value;
-                    o.mod[t ? "change_i_exp" : "change_i"](ratio_val, mod_freq, t);
+
+                    const { d_gain } = o.mod[t ? "change_i_exp" : "change_i"](ratio_val, mod_freq, t);
+                    d_input.value = d_gain;
                 });
 
                 opt_cont.appendChild(label);
@@ -158,16 +165,17 @@ function custom_docfrag_nodes(o, config) {
 
                 inp.addEventListener('change', () => {
                     let me_container = get_controls_div(container),
-                        t = parseInt(document.querySelector('.change-pitch > .time > .input-val').value),
+                        t = parseInt(me_container.querySelector('.change-pitch > .time > .input-val').value),
                         carrier_freq = parseFloat(me_container.querySelector('.change-pitch > .carrier_freq > .input-val').value),
                         i_ratio_input = me_container.querySelector('.change-i > .ratio > .input-val'),
-                        mod_freq_input = me_container.querySelector('.modulator_freq > .input-val');
+                        mod_freq_input = me_container.querySelector('.modulator_freq > .input-val'),
+                        d_input = me_container.querySelector('.d_gain > .input-val');
 
-                    const { ratio_tobe_kept, mod_freq } = o.mod[t ? "change_pitch_exp" : "change_pitch"](carrier_freq, t);
+                    const { ratio_tobe_kept, mod_freq, d_gain } = o.mod[t ? "change_pitch_exp" : "change_pitch"](carrier_freq, t);
 
                     i_ratio_input.value = ratio_tobe_kept;
                     mod_freq_input.value = mod_freq;
-
+                    d_input.value = d_gain;
                 });
 
                 opt_cont.appendChild(label);
