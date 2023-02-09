@@ -1,4 +1,4 @@
-# Sound Objects - A list of experiments about sound modules and instruments using Web Audio
+# SoundO - A list of experiments about sound modules and instruments using Web Audio
 
 **Currently implemented modules**
 * am 
