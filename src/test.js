@@ -1,16 +1,16 @@
-import { AM } from "./mod/am";
-import { RM } from './mod/rm';
-import { FM } from './mod/fm';
-import { FM_acim } from './inst/fm_acim';
-import { FM_2c1m } from './inst/fm_2c1m';
+import { AM } from "./mod/AM";
+import { RM } from './mod/RM';
+import { FM } from './mod/FM';
+import { FM_acim } from './inst/FM_acim';
+import { FM_2c1m } from './inst/FM_2c1m';
 
 const ///////////
     MOD_MAP = {
-        am: AM,
-        rm: RM,
-        fm: FM,
-        fm_acim: FM_acim,
-        fm_2c1m: FM_2c1m
+        AM,
+        RM,
+        FM,
+        FM_acim,
+        FM_2c1m
     };
 
 const conf = {};

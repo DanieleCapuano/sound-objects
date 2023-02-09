@@ -1,4 +1,4 @@
-import { FM } from "../mod/fm";
+import { FM } from "../mod/FM";
 
 //ACIM - Additive Carriers and Independent Modulator
 export const FM_acim = _FM_acim;
@@ -35,13 +35,15 @@ function _init(config) {
             carrier_freq: this.opts.m1_carrier_freq,
             modulator_freq: this.opts.m1_modulatr_freq,
             d_gain: this.opts.m1_d_gain,
-            master_g: g
+            master_g: g,
+            show_docfrag: config.show_docfrag
         }),
         m2 = new FM({
             carrier_freq: this.opts.m2_carrier_freq,
             modulator_freq: this.opts.m2_modulator_freq,
             d_gain: this.opts.m2_d_gain,
-            master_g: g.gain
+            master_g: g.gain,
+            show_docfrag: config.show_docfrag
         });
     g.gain.value = this.opts.inst_g;
 
