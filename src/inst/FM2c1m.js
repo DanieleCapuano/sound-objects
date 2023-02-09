@@ -1,10 +1,10 @@
 import { get_docfrag } from "../utils";
 
 //2 Carriers and 1 Modulator
-export const FM_2c1m = _FM_2c1m;
-export default FM_2c1m;
+export const FM2c1m = _FM2c1m;
+export default FM2c1m;
 
-function _FM_2c1m(opts) {
+function _FM2c1m(opts) {
     Object.assign(this, {
         mod: {},
         opts: Object.assign({

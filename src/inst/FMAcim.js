@@ -1,10 +1,10 @@
 import { FM } from "../mod/FM";
 
 //ACIM - Additive Carriers and Independent Modulator
-export const FM_acim = _FM_acim;
-export default FM_acim;
+export const FMAcim = _FMAcim;
+export default FMAcim;
 
-function _FM_acim(opts) {
+function _FMAcim(opts) {
     Object.assign(this, {
         mod: {},
         opts: Object.assign({

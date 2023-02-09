@@ -1,16 +1,16 @@
 import { AM } from "./mod/AM";
 import { RM } from './mod/RM';
 import { FM } from './mod/FM';
-import { FM_acim } from './inst/FMAcim';
-import { FM_2c1m } from './inst/FM2c1m';
+import { FMAcim } from './inst/FMAcim';
+import { FM2c1m } from './inst/FM2c1m';
 
 const ///////////
     MOD_MAP = {
         AM,
         RM,
         FM,
-        FM_acim,
-        FM_2c1m
+        FMAcim,
+        FM2c1m
     };
 
 const conf = {};
