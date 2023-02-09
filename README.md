@@ -6,7 +6,7 @@
 * FM
 
 **Currently implemented instruments**
-* FMACIM - Additive Carriers and Independent Modulator
+* FMAcim - Additive Carriers and Independent Modulator
 * FM2c1m - Two carriers with a single modulator
 
 ```
