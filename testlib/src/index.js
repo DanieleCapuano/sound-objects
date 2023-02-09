@@ -19,9 +19,11 @@ window.addEventListener('load', () => {
             master_g.connect(ctx.destination);
             P_inst = (new p()).init(Object.assign(cfg, { ctx, master_g }));
             P_inst.start(cfg);
+            console.info("Playing '" + testing + "', instance object: ", P_inst);
         }
         else {
             P_inst.stop(cfg);
+            console.info("Stopping '" + testing + "'");
         }
         PLAYING = !!!PLAYING;
     };
