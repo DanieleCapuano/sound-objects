@@ -1,6 +1,7 @@
 import { get_docfrag } from "../utils";
 
 export const RM = _RM;
+export default RM;
 
 function _RM(opts) {
     return Object.assign(this, {

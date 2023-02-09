@@ -1,6 +1,7 @@
 import { get_docfrag } from "../utils";
 
 export const AM = _AM;
+export default AM;
 
 function _AM(opts) {
     Object.assign(this, {

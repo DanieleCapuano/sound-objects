@@ -1,6 +1,7 @@
 import { get_docfrag } from "../utils";
 
 export const FM = _FM;
+export default FM;
 
 function _FM(opts) {
     Object.assign(this, {
