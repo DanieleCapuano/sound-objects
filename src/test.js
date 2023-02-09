@@ -45,6 +45,7 @@ function loaded() {
             conf.ctx = conf.ctx || new AudioContext();
             conf.master_g = conf.master_g || conf.ctx.createGain();
             conf.master_g.connect(conf.ctx.destination);
+            conf.show_docfrag = true;
 
             mg = conf.master_g;
             ctx = conf.ctx;

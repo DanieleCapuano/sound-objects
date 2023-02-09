@@ -54,7 +54,7 @@ function _init(config) {
     });
 
     window.FM_acim = this.mod;
-    return get_docfrag(this, config, m1_docfrag, m2_docfrag);
+    return config.show_docfrag ? get_docfrag_custom(this, config, m1_docfrag, m2_docfrag) : this;
 }
 
 function _start(config) {
@@ -75,7 +75,7 @@ function _stop(config) {
         [carrier, modulator].forEach(osc => osc.stop());
     });
 }
-function get_docfrag(o, config, m1_docfrag, m2_docfrag) {
+function get_docfrag_custom(o, config, m1_docfrag, m2_docfrag) {
     let d = new DocumentFragment();
 
     [m1_docfrag, m2_docfrag].forEach((df, i) => {

@@ -55,7 +55,7 @@ function _init(config) {
 
     window.AM = this.mod;
 
-    return get_docfrag(this, config);
+    return config.show_docfrag ? get_docfrag(this, config) : this; 
 }
 function _start(config) {
     const { carrier, modulator } = this.mod;

@@ -90,7 +90,7 @@ function _init(config) {
 
     window.FM = this.mod;
 
-    return get_docfrag(this, config, custom_docfrag_nodes);
+    return config.show_docfrag ? get_docfrag(this, config, custom_docfrag_nodes) : this;
 }
 function _start(config) {
     const { carrier, modulator } = this.mod;

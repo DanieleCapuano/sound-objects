@@ -59,7 +59,7 @@ function _init(config) {
     });
 
     window.FM_2c1m = this.mod;
-    return get_docfrag(this, config);
+    return config.show_docfrag ? get_docfrag(this, config) : this;
 }
 
 function _start(config) {
