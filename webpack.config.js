@@ -59,6 +59,9 @@ const config = [{
       {
         test: /\.(js|jsx)$/i,
         loader: "babel-loader",
+        options: {
+          plugins: ["import-directory"]
+        }
       },
       {
         test: /\.css$/i,

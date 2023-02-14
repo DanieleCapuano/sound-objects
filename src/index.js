@@ -1,11 +1,11 @@
-import * as mods from "./mod";
+import * as ops from "./op";
 import * as insts from "./inst";
 
-const patches = {};
+const operators = {};
 const instruments = {};
 
-Object.keys(mods).forEach(mod_key => { patches[mod_key] = mods[mod_key].default; });
+Object.keys(ops).forEach(op_key => { operators[op_key] = opts[op_key].default; });
 Object.keys(insts).forEach(inst_key => { instruments[inst_key] = insts[inst_key].default; });
 
-export { patches, instruments };
-export default { patches, instruments };
+export { operators, instruments };
+export default { operators, instruments };

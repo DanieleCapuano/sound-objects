@@ -1,11 +1,11 @@
-import { patches, instruments } from "soundo";
+import { operators, instruments } from "soundo";
 
 let testing = 'FMAcim';
 let PLAYING = false;
 window.addEventListener('load', () => {
-    console.info("LOADED", patches, instruments);
+    console.info("LOADED", operators, instruments);
 
-    let p = (patches[testing] || instruments[testing]),
+    let p = (operators[testing] || instruments[testing]),
         P_inst,
         cfg = {};
 

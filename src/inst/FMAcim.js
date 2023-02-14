@@ -1,4 +1,4 @@
-import { FM } from "../mod/FM";
+import { FM } from "../op/FM";
 
 //ACIM - Additive Carriers and Independent Modulator
 export const FMAcim = _FMAcim;
@@ -56,7 +56,7 @@ function _init(config) {
         m1, m2
     });
 
-    window.FM_acim = this.mod;
+    window.FMAcim = this.mod;
     return config.show_docfrag ? get_docfrag_custom(this, config, m1_docfrag, m2_docfrag) : this;
 }
 

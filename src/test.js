@@ -1,17 +1,5 @@
-import { AM } from "./mod/AM";
-import { RM } from './mod/RM';
-import { FM } from './mod/FM';
-import { FMAcim } from './inst/FMAcim';
-import { FM2c1m } from './inst/FM2c1m';
-
-const ///////////
-    MOD_MAP = {
-        AM,
-        RM,
-        FM,
-        FMAcim,
-        FM2c1m
-    };
+import * as ops from './op';
+import * as insts from './inst';
 
 const conf = {};
 window.addEventListener('load', loaded);
@@ -19,6 +7,11 @@ function loaded() {
     const start_bt = document.querySelector('.trigger-btn'),
         select_box = document.querySelector('.selector'),
         controls = document.querySelector('.controls');
+
+    const MOD_MAP = Object.keys(ops).concat(Object.keys(insts)).reduce((o, key) => {
+        o[key] = (ops[key] || insts[key]).default;
+        return o;
+    }, {});
 
     select_box.innerHTML = Object.keys(MOD_MAP)
         .map(mod_key => '<option value="' + mod_key + '">' + mod_key + '</option>')
