@@ -1,4 +1,4 @@
-import { get_docfrag } from "../utils";
+import { get_docfrag, generate_osctype_enum } from "../utils";
 
 export const FM = _FM;
 export default FM;
@@ -8,7 +8,9 @@ function _FM(opts) {
         mod: {},
         opts: Object.assign({
             carrier_freq: 220,
+            carrier_type: 'sine',
             modulator_freq: 10,
+            modulator_type: 'sine',
             d_gain: 40,
             carrier_g: .8
         }, opts || {}),
@@ -30,6 +32,12 @@ function _init(config) {
 
     modulator.frequency.value = this.opts.modulator_freq;        //modulation frequency
     this.opts.modulator_freq_param = modulator.frequency;
+
+    carrier.type = this.opts.carrier_type;
+    this.opts.carrier_type_enum = generate_osctype_enum(carrier);
+    
+    modulator.type = this.opts.modulator_type;
+    this.opts.modulator_type_enum = generate_osctype_enum(modulator);
 
     d.gain.value = this.opts.d_gain;                            //modulation index "i" = d / mod_freq ==> i+1 partials
     this.opts.d_gain_param = d.gain;

@@ -1,4 +1,4 @@
-import { get_docfrag } from "../utils";
+import { generate_osctype_enum, get_docfrag } from "../utils";
 
 //2 Carriers and 1 Modulator
 export const FM2c1m = _FM2c1m;
@@ -9,9 +9,12 @@ function _FM2c1m(opts) {
         mod: {},
         opts: Object.assign({
             modulator_freq: 7,
+            modulator_type: 'sine',
             d_gain: 40,
             carrier1_freq: 200,
+            carrier1_type: 'sine',
             carrier2_freq: 40,
+            carrier2_type: 'sine',
             carrier_g: .1
         }, opts || {}),
         init: _init.bind(this),
@@ -45,6 +48,13 @@ function _init(config) {
 
     g.gain.value = this.opts.carrier_g;
     this.opts.carrier_g_param = g.gain;
+
+    m.type = this.opts.modulator_type;
+    this.opts.modulator_type_enum = generate_osctype_enum(m);
+    c1.type = this.opts.carrier1_type;
+    this.opts.carrier1_type_enum = generate_osctype_enum(c1);
+    c2.type = this.opts.carrier2_type;
+    this.opts.carrier2_type_enum = generate_osctype_enum(c2);
 
     m.connect(d);
     d.connect(c1.frequency);

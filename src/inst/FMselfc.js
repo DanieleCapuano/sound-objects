@@ -1,4 +1,4 @@
-import { get_docfrag } from "../utils";
+import { generate_osctype_enum, get_docfrag } from "../utils";
 
 //Self-modulating Carrier
 export const FMselfc = _FMselfc;
@@ -10,6 +10,7 @@ function _FMselfc(opts) {
         opts: Object.assign({
             mod_g: 1,
             carrier_freq: 100,
+            carrier_type: 'sine',
             carrier_g: 1
         }, opts || {}),
         init: _init.bind(this),
@@ -32,6 +33,9 @@ function _init(config) {
 
     c.frequency.value = this.opts.carrier_freq;
     this.opts.carrier_freq_param = c.frequency;
+
+    c.type = this.opts.carrier_type;
+    this.opts.carrier_type_enum = generate_osctype_enum(c);
 
     g.gain.value = this.opts.carrier_g;
     this.opts.carrier_g_param = g.gain;
