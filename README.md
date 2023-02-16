@@ -4,6 +4,7 @@
 * AM 
 * RM
 * FM
+* WS - WaveShaper
 
 **Currently implemented instruments**
 * FMAcim - [FM] Additive Carriers and Independent Modulator
