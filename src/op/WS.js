@@ -12,7 +12,8 @@ function _WS(opts) {
             carrier_freq: 220,
             carrier_type: 'sine',
             carrier_g: 1,
-            shaping_amount: 20
+            shaping_amount: 20,
+            shaping_fn: 'distortion'
         }, opts || {}),
         init: _init.bind(this),
         start: _start.bind(this),
@@ -36,10 +37,21 @@ function _init(config) {
     c_g.gain.value = this.opts.carrier_g;
     this.opts.carrier_g_param = c_g.gain;
 
-    ws.curve = make_curve(ctx, distortion.bind(null, this.opts.shaping_amount));
+    let ws_fns = {
+        "distortion": {
+            fn: distortion,
+            set_args: ((f, val) => f.bind(null, parseFloat(val || this.opts.shaping_amount)))
+        },
+        "chebishev": {
+            fn: chebyshev,
+            set_args: ((f, val) => f.bind(null, 5,  [.1, .1, .1, .1].map(n => n * (parseFloat(val || 1)))))
+        }
+    }
+    let fn_def = ws_fns[this.opts.shaping_fn];
+    ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn));
     this.opts.shaping_amount_enum = {
         values: 'int',
-        onchange: (val) => ws.curve = make_curve(ctx, distortion.bind(null, parseFloat(val)))
+        onchange: (val) => ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn, val))
     };
 
     carrier
@@ -85,8 +97,14 @@ function distortion(amount, x) {
 }
 
 //see https://kenny-peng.com/2022/06/18/chebyshev_harmonics.html
+//x is in range [-1, 1]
 function chebyshev(N, weights, x)  {
-    // let f0 = 
+    let f0 = chebyshev_poly(1, x);
+    for (let n = 2; n <= N; n++) {
+        f0 += weights[n-2] * chebyshev_poly(n, x);
+    }
+
+    return f0;
 }
 function chebyshev_poly(n, x) {
     if (n === 0) return 1;
