@@ -36,10 +36,10 @@ function _init(config) {
     c_g.gain.value = this.opts.carrier_g;
     this.opts.carrier_g_param = c_g.gain;
 
-    ws.curve = makeDistortionCurve(this.opts.shaping_amount);
+    ws.curve = make_curve(ctx, distortion.bind(null, this.opts.shaping_amount));
     this.opts.shaping_amount_enum = {
         values: 'int',
-        onchange: (val) => ws.curve = makeDistortionCurve(parseFloat(val))
+        onchange: (val) => ws.curve = make_curve(ctx, distortion.bind(null, parseFloat(val)))
     };
 
     carrier
@@ -56,19 +56,47 @@ function _init(config) {
     return config.show_docfrag ? get_docfrag(this, config) : this;
 }
 
-//see https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createWaveShaper#example
-function makeDistortionCurve(amount) {
-    const k = typeof amount === "number" ? amount : 50;
-    const n_samples = 44100;
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//Transfer functions
+//////////////////////////////////////////////
+
+function make_curve(ctx, fn) {
+    const n_samples = ctx.sampleRate;
     const curve = new Float32Array(n_samples);
-    const deg = Math.PI / 180;
 
     for (let i = 0; i < n_samples; i++) {
-        const x = (i * 2) / n_samples - 1;
-        curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+        const x = (i * 2) / n_samples - 1;  //   i / n_samples          in [0, 1]
+                                            //  (i*2) / n_samples       in [0, 2]
+                                            // ((i*2) / n_samples) - 1  in [-1, 1]
+        curve[i] = fn(x);
     }
     return curve;
 }
+
+//see https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createWaveShaper#example
+//x is in range [-1, 1]
+function distortion(amount, x) {
+    const /////////////////
+        k = typeof amount === "number" ? amount : 50,
+        deg = Math.PI / 180;
+
+    return ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+}
+
+//see https://kenny-peng.com/2022/06/18/chebyshev_harmonics.html
+function chebyshev(N, weights, x)  {
+    // let f0 = 
+}
+function chebyshev_poly(n, x) {
+    if (n === 0) return 1;
+    if (n === 1) return x;
+    return 2*x*chebyshev_poly(n-1, x) + chebyshev_poly(n-2, x);
+}
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
 
 function _start(config) {
     const { carrier } = this.mod;
