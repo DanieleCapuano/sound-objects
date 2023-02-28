@@ -13,6 +13,7 @@ function _WS(opts) {
             carrier_type: 'sine',
             carrier_g: 1,
             shaping_amount: 20,
+            shaping_harmonics: [.1, .1, .1, .1, .1, .1, .1, .1, .1, .1],
             shaping_fn: 'distortion'
         }, opts || {}),
         init: _init.bind(this),
@@ -30,12 +31,16 @@ function _init(config) {
 
     carrier.frequency.value = this.opts.carrier_freq;
     this.opts.carrier_freq_param = carrier.frequency;
-    
+
     carrier.type = this.opts.carrier_type;
     this.opts.carrier_type_enum = generate_osctype_enum(carrier);
 
     c_g.gain.value = this.opts.carrier_g;
     this.opts.carrier_g_param = c_g.gain;
+
+    let cheby_n_harm = this.opts.shaping_harmonics.length,
+        cheby_weights = this.opts.shaping_harmonics,
+        cheby_amount = this.opts.shaping_amount;
 
     let ws_fns = {
         "distortion": {
@@ -44,14 +49,34 @@ function _init(config) {
         },
         "chebishev": {
             fn: chebyshev,
-            set_args: ((f, val) => f.bind(null, 5,  [.1, .1, .1, .1].map(n => n * (parseFloat(val || 1)))))
+            set_args: ((f, val) => f.bind(null, cheby_n_harm, cheby_weights.map(n => n * (parseFloat(val || 1)))))
         }
     }
     let fn_def = ws_fns[this.opts.shaping_fn];
     ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn));
+
+    this.opts.shaping_harmonics_enum = cheby_weights.map((w, i) => ({
+        values: 'int',
+        value: w,
+        onchange: (val) => {
+            cheby_weights[i] = parseFloat(val);
+            ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn, cheby_amount))
+        }
+    }));
+
     this.opts.shaping_amount_enum = {
         values: 'int',
-        onchange: (val) => ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn, val))
+        onchange: (val) => {
+            cheby_amount = parseFloat(val);
+            ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn, cheby_amount));
+        }
+    };
+    this.opts.shaping_fn_enum = {
+        values: ['distortion', 'chebishev'],
+        onchange: (val) => {
+            fn_def = ws_fns[val];
+            ws.curve = make_curve(ctx, fn_def.set_args(fn_def.fn, cheby_amount));
+        }
     };
 
     carrier
@@ -79,9 +104,12 @@ function make_curve(ctx, fn) {
 
     for (let i = 0; i < n_samples; i++) {
         const x = (i * 2) / n_samples - 1;  //   i / n_samples          in [0, 1]
-                                            //  (i*2) / n_samples       in [0, 2]
-                                            // ((i*2) / n_samples) - 1  in [-1, 1]
+        //  (i*2) / n_samples       in [0, 2]
+        // ((i*2) / n_samples) - 1  in [-1, 1]
         curve[i] = fn(x);
+    }
+    if (fn.post_processing) {
+        fn.post_processing(curve);
     }
     return curve;
 }
@@ -98,18 +126,28 @@ function distortion(amount, x) {
 
 //see https://kenny-peng.com/2022/06/18/chebyshev_harmonics.html
 //x is in range [-1, 1]
-function chebyshev(N, weights, x)  {
-    let f0 = chebyshev_poly(1, x);
-    for (let n = 2; n <= N; n++) {
-        f0 += weights[n-2] * chebyshev_poly(n, x);
-    }
+function chebyshev(N, weights, x) {
+    const /////////////////////////////////////////////
+        f0 = (X) => {
+            let res = chebyshev_poly(1, X);
+            for (let n = 2; n < N + 2; n++) {
+                res += weights[n - 2] * chebyshev_poly(n, X);
+            }
 
-    return f0;
+            return res;
+        },
+        f1 = (X) => f0(X) - f0(0);
+
+    return f1(x);
+}
+chebyshev.post_processing = (f1_res) => {
+    const f1_max = f1_res.reduce((max, n) => Math.max(max, n), Number.NEGATIVE_INFINITY);
+    return f1_res.map(n => n / f1_max);
 }
 function chebyshev_poly(n, x) {
     if (n === 0) return 1;
     if (n === 1) return x;
-    return 2*x*chebyshev_poly(n-1, x) + chebyshev_poly(n-2, x);
+    return 2 * x * chebyshev_poly(n - 1, x) + chebyshev_poly(n - 2, x);
 }
 
 //////////////////////////////////////////////
