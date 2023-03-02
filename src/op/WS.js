@@ -12,8 +12,8 @@ function _WS(opts) {
             carrier_freq: 220,
             carrier_type: 'sine',
             carrier_g: 1,
-            shaping_amount: 20,
-            shaping_harmonics: [.1, .1, .1, .1, .1, .1, .1, .1, .1, .1],
+            shaping_amount: 4,
+            shaping_harmonics: [.1, .1, .1, .1, .1],
             shaping_fn: 'distortion'
         }, opts || {}),
         init: _init.bind(this),
@@ -49,7 +49,10 @@ function _init(config) {
         },
         "chebishev": {
             fn: chebyshev,
-            set_args: ((f, val) => f.bind(null, cheby_n_harm, cheby_weights.map(n => n * (parseFloat(val || 1)))))
+            set_args: ((f, val) => Object.assign(
+                f.bind(null, cheby_n_harm, cheby_weights.map(n => n * (parseFloat(val || 1)))),
+                Object.assign({}, chebyshev_data)
+            ))
         }
     }
     let fn_def = ws_fns[this.opts.shaping_fn];
@@ -100,17 +103,19 @@ function _init(config) {
 
 function make_curve(ctx, fn) {
     const n_samples = ctx.sampleRate;
-    const curve = new Float32Array(n_samples);
+    let curve = new Float32Array(n_samples);
+
+    fn.init_processing && fn.init_processing(fn);
 
     for (let i = 0; i < n_samples; i++) {
         const x = (i * 2) / n_samples - 1;  //   i / n_samples          in [0, 1]
         //  (i*2) / n_samples       in [0, 2]
         // ((i*2) / n_samples) - 1  in [-1, 1]
         curve[i] = fn(x);
+        fn.step_processing && fn.step_processing(fn, curve[i]);
     }
-    if (fn.post_processing) {
-        fn.post_processing(curve);
-    }
+    curve = (fn.post_processing ? fn.post_processing(fn, curve) : curve);
+
     return curve;
 }
 
@@ -140,10 +145,17 @@ function chebyshev(N, weights, x) {
 
     return f1(x);
 }
-chebyshev.post_processing = (f1_res) => {
-    const f1_max = f1_res.reduce((max, n) => Math.max(max, n), Number.NEGATIVE_INFINITY);
-    return f1_res.map(n => n / f1_max);
-}
+const chebyshev_data = {
+    f1_max: Number.NEGATIVE_INFINITY,
+    init_processing: (_this) => _this.f1_max = Number.NEGATIVE_INFINITY,
+    step_processing: (_this, val) => _this.f1_max = Math.max(_this.f1_max, val),
+    post_processing: (_this, f1_res) => {
+        for (let i = 0; i < f1_res.length; i++) {
+            f1_res[i] /= _this.f1_max;
+        }
+        return f1_res;
+    }
+};
 function chebyshev_poly(n, x) {
     if (n === 0) return 1;
     if (n === 1) return x;
