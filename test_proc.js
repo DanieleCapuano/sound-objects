@@ -1,4 +1,6 @@
 //AUDIO WORKLET PROCESSOR TEST
+//start code from
+//https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process
 
 class WhiteNoiseProcessor extends AudioWorkletProcessor {
     process(inputs, outputs, parameters) {
