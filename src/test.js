@@ -33,7 +33,7 @@ function loaded() {
 
     let STARTED = false;
     let mg, ctx;
-    start_bt.addEventListener('click', () => {
+    start_bt.addEventListener('click', async () => {
         if (!STARTED) {
             conf.ctx = conf.ctx || new AudioContext();
             conf.master_g = conf.master_g || conf.ctx.createGain();
@@ -42,6 +42,8 @@ function loaded() {
 
             mg = conf.master_g;
             ctx = conf.ctx;
+
+            return _proc(conf.ctx);
 
             console.info("Init module...");
             let doc_frag = init(conf);

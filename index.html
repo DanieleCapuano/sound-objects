@@ -58,7 +58,32 @@
     <button class="trigger-btn">START / STOP</button>
     <select class="selector"></select>
     <div class="controls"></div>
-    <script src="dist/sound_objects_test.js"></script>
+    <!-- <script src="dist/sound_objects_test.js"></script> -->
+
+    <script>
+        const _proc = async (audioContext) => {
+            // const audioContext = new AudioContext();
+            await audioContext.audioWorklet.addModule('./test_proc.js');
+            const whiteNoiseNode = new AudioWorkletNode(
+                audioContext,
+                "white-noise-processor",
+                {
+                    numberOfOutputs: 1,
+                    outputChannelCount: [2]
+                }
+            );
+            whiteNoiseNode.connect(audioContext.destination);
+
+            let osc = audioContext.createOscillator();
+            osc.channelCountMode = 'explicit';
+            osc.connect(whiteNoiseNode);
+            osc.start();
+        };
+        document.addEventListener('click', () => {
+            const ctx = new AudioContext();
+            _proc(ctx);
+        });
+    </script>
 </body>
 
 </html>

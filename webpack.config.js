@@ -19,6 +19,9 @@ const config = [{
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
+    // parser: {
+    //   worker: ["Worker from ./src/op/PROC.js"]
+    // },
     rules: [
       {
         test: /\.(js|jsx)$/i,
