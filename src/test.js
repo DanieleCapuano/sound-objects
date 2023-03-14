@@ -1,6 +1,15 @@
 import * as ops from './op';
 import * as insts from './inst';
 
+/*
+    we cannot import worklets like this because it tries to execute the AudioWorkletProcessor outside a worker so it fails
+    we'll have a list of worklet-based instruments which will execute nodes using worklets
+*/
+// import * as worklets from './worklet';
+
+//solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
+import { AudioWorklet } from "./audio-worklet";
+
 const conf = {};
 window.addEventListener('load', loaded);
 function loaded() {
@@ -71,3 +80,24 @@ function loaded() {
         select_box.disabled = STARTED;
     });
 }
+
+
+//solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
+const _proc = async (audioContext) => {
+    let aw = new AudioWorklet(new URL('./worklet/PROC.js', import.meta.url));
+    await audioContext.audioWorklet.addModule(aw);
+    const whiteNoiseNode = new AudioWorkletNode(
+        audioContext,
+        "white-noise-processor",
+        {
+            numberOfOutputs: 1,
+            outputChannelCount: [2]
+        }
+    );
+    whiteNoiseNode.connect(audioContext.destination);
+
+    let osc = audioContext.createOscillator();
+    osc.channelCountMode = 'explicit';
+    osc.connect(whiteNoiseNode);
+    osc.start();
+};
