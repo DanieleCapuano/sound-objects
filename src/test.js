@@ -48,11 +48,10 @@ function loaded() {
             conf.master_g = conf.master_g || conf.ctx.createGain();
             conf.master_g.connect(conf.ctx.destination);
             conf.show_docfrag = true;
+            conf.container = controls;
 
             mg = conf.master_g;
             ctx = conf.ctx;
-
-            return _proc(conf.ctx);
 
             console.info("Init module...");
             let doc_frag = init(conf);
@@ -80,24 +79,3 @@ function loaded() {
         select_box.disabled = STARTED;
     });
 }
-
-
-//solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
-const _proc = async (audioContext) => {
-    let aw = new AudioWorklet(new URL('./worklet/PROC.js', import.meta.url));
-    await audioContext.audioWorklet.addModule(aw);
-    const whiteNoiseNode = new AudioWorkletNode(
-        audioContext,
-        "white-noise-processor",
-        {
-            numberOfOutputs: 1,
-            outputChannelCount: [2]
-        }
-    );
-    whiteNoiseNode.connect(audioContext.destination);
-
-    let osc = audioContext.createOscillator();
-    osc.channelCountMode = 'explicit';
-    osc.connect(whiteNoiseNode);
-    osc.start();
-};

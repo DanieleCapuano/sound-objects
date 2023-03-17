@@ -1,8 +1,9 @@
-//AUDIO WORKLET PROCESSOR TEST
+//AUDIO WORKLET PROCESSOR for Channel Phasing
 //start code from
 //https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process
 
-class WhiteNoiseProcessor extends AudioWorkletProcessor {
+//CHannels Phaser - first experiment with audio worklets
+class CHPhaserProcessor extends AudioWorkletProcessor {
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
@@ -10,14 +11,15 @@ class WhiteNoiseProcessor extends AudioWorkletProcessor {
         let d = new Date().getTime();
         output.forEach((channel, ch_i) => {
             for (let i = 0; i < channel.length; i++) {
-                channel[i] =
-                    input[i] * Math.abs((Math.sin(d * (.0001 * (ch_i + 1))) * (ch_i + 1))) *
-                    // the array can contain 1 or 128 values
+                let frq = // the array can contain 1 or 128 values
                     // depending on if the automation is present
                     // and if the automation rate is k-rate or a-rate
-                    (parameters["customGain"].length > 1
-                        ? parameters["customGain"][i]
-                        : parameters["customGain"][0]);
+                    (parameters["frequency"].length > 1
+                        ? parameters["frequency"][i]
+                        : parameters["frequency"][0]);
+
+                channel[i] = input[i] * Math.abs((Math.sin(d * (frq * (ch_i + 1))) * (ch_i + 1)));
+
             }
         });
         // as this is a source node which generates its own output,
@@ -29,14 +31,14 @@ class WhiteNoiseProcessor extends AudioWorkletProcessor {
     static get parameterDescriptors() {
         return [
             {
-                name: "customGain",
-                defaultValue: 1,
-                minValue: 0,
-                maxValue: 1,
+                name: "frequency",
+                defaultValue: .001,
+                minValue: 0.001,
+                maxValue: 100,
                 automationRate: "a-rate",
             },
         ];
     }
 }
 
-registerProcessor("white-noise-processor", WhiteNoiseProcessor);
+registerProcessor("ch-phaser-processor", CHPhaserProcessor);

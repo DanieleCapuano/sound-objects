@@ -1,8 +1,28 @@
 export const get_docfrag = _get_docfrag;
+export const update_docfrag = _update_docfrag;
 export const generate_osctype_enum = _generate_osctype_enum;
 
 function _get_docfrag(o, config, custom_get) {
     let d = new DocumentFragment();
+
+    Object.keys(o.opts).forEach(opt_key => {
+
+        let /////////////////////////////////////////////////
+            container_param = _get_container(o, config, opt_key, 'param'),
+            container_enum = _get_container(o, config, opt_key, 'enum');
+
+        container_param && d.appendChild(container_param);
+        container_enum && d.appendChild(container_enum);
+    });
+
+    if (custom_get) {
+        d.appendChild(custom_get(o, config));
+    }
+    return d;
+}
+
+function _update_docfrag(docfrag, o, config, custom_get) {
+    let d = docfrag || new DocumentFragment();
 
     Object.keys(o.opts).forEach(opt_key => {
 

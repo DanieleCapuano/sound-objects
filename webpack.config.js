@@ -21,7 +21,11 @@ const config = [{
   module: {
     parser: {
       javascript: {
-        worker: ["AudioWorklet from ./audio-worklet", "..."]
+        worker: [
+          "AudioWorklet from ./audio-worklet",
+          "AudioWorklet from ../audio-worklet",
+          "..."
+        ]
       }
     },
     rules: [
