@@ -50,7 +50,7 @@ function _init(config) {
             "crossfading-processor",
             {
                 numberOfInputs: 2,
-                numberOfOutputs: 1
+                numberOfOutputs: 2
             }
         );
 
@@ -59,7 +59,7 @@ function _init(config) {
         this.opts.cf_amount_param = cfp_amout;
 
         osc_1.connect(cfpNode);
-        osc_2.connect(cfpNode);
+        osc_2.connect(cfpNode, 0, 1);
         cfpNode.connect(master_g);
 
         Object.assign(this.mod, {

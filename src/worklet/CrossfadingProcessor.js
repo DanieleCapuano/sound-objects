@@ -25,7 +25,7 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
                     in1_sample = input_1[i] || 0,
                     in2_sample = input_2[i] || 0;
 
-                amount = isNaN(amount) ? .5 : amount;
+                amount = isNaN(amount) ? .5 : Math.max(0, Math.min(1, amount));
 
                 //linear interpolation of inputs based on amount parameter
                 channel[i] = in1_sample * (1 - amount) + in2_sample * amount;
@@ -34,7 +34,7 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
         // as this is a source node which generates its own output,
         // we return true so it won't accidentally get garbage-collected
         // if we don't have any references to it in the main thread
-        return false;
+        return true;
     }
     // define the customGain parameter used in process method
     static get parameterDescriptors() {
@@ -43,7 +43,6 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
                 name: "amount",
                 defaultValue: .5,
                 minValue: 0,
-                maxValue: 1,
                 automationRate: "k-rate",
             },
         ];
