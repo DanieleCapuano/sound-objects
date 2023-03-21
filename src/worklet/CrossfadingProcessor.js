@@ -7,12 +7,9 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
-        // console.info("INPUTS", inputs);
 
         const input_1 = inputs[0][0] || [];
         const input_2 = inputs[1][0] || [];
-
-        // console.info(inputs[0]);
 
         output.forEach((channel) => {
             for (let i = 0; i < channel.length; i++) {
