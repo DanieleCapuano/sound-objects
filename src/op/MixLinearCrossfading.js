@@ -8,10 +8,10 @@ import { generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
 
 let _DOCFRAG = null;
 
-export const LinearCrossfading = _LinearCrossfading;
-export default LinearCrossfading;
+export const MixCrossfading = _MixCrossfading;
+export default MixCrossfading;
 
-function _LinearCrossfading(opts) {
+function _MixCrossfading(opts) {
     Object.assign(this, {
         mod: {},
         opts: Object.assign({
@@ -90,7 +90,7 @@ function _init(config) {
         }
     });
 
-    window.LinearCrossfading = this.mod;
+    window.MixCrossfading = this.mod;
 
     Object.assign(this.mod, {
         osc_1, osc_2
