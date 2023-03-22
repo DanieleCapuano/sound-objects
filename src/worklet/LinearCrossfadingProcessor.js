@@ -3,7 +3,7 @@
 //https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process
 
 //Crossfading Processor
-class CrossfadingProcessor extends AudioWorkletProcessor {
+class LinearCrossfadingProcessor extends AudioWorkletProcessor {
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
@@ -25,7 +25,7 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
                 amount = isNaN(amount) ? .5 : Math.max(0, Math.min(1, amount));
 
                 //linear interpolation of inputs based on amount parameter
-                channel[i] = in1_sample * (1 - amount) + in2_sample * amount;
+                channel[i] = Math.max(-1, Math.min(1, in1_sample * (1 - amount) + in2_sample * amount));
             }
         });
         // as this is a source node which generates its own output,
@@ -46,4 +46,4 @@ class CrossfadingProcessor extends AudioWorkletProcessor {
     }
 }
 
-registerProcessor("crossfading-processor", CrossfadingProcessor);
+registerProcessor("linear-crossfading-processor", LinearCrossfadingProcessor);

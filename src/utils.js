@@ -64,7 +64,9 @@ function _get_container(o, config, opt_key, type) {
 
 function _get_param_single_dom(o, config, opt_key, pm, i) {
     const { ctx } = config;
-    let opt_val = pm.value || o.opts[opt_key];
+    let opt_opts = o.opts[opt_key];
+    let opt_val = pm.value || opt_opts;
+    if (typeof opt_val === 'object') opt_val = opt_val.value;
 
     let container = document.createElement('div');
     container.classList.add('container', 'param', opt_key);
@@ -76,8 +78,11 @@ function _get_param_single_dom(o, config, opt_key, pm, i) {
     let input = document.createElement('input');
     input.classList.add('input-val');
     input.setAttribute('type', 'number');
-    input.setAttribute('min', '0');
-    input.setAttribute('step', '0.1');
+    input.setAttribute('min', opt_opts.min || '0');
+    if (opt_opts.max) {
+        input.setAttribute('max', opt_opts.max);
+    }
+    input.setAttribute('step', opt_opts.step || '0.1');
     input.value = opt_val;
     input.addEventListener('change', () => {
         let param = o.opts[opt_key + '_param'];

@@ -3,24 +3,30 @@ import { AudioWorklet } from "../audio-worklet";
 import { generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
 
 ///////////////////////////
-//Fuzzy phaser using audio worklets...quite noisy and fool, 
-//but it's the first experiment using both soundo modules and worklet processors together!
+//Mix Crossfading using audio worklets
 ///////////////////////////
 
 let _DOCFRAG = null;
 
-export const Crossfading = _Crossfading;
-export default Crossfading;
+export const LinearCrossfading = _LinearCrossfading;
+export default LinearCrossfading;
 
-function _Crossfading(opts) {
+function _LinearCrossfading(opts) {
     Object.assign(this, {
         mod: {},
         opts: Object.assign({
-            osc1_freq: 220,
-            osc1_type: 'sine',
-            osc2_freq: 110,
-            osc2_type: 'sine',
-            cf_amount: .5
+            osc1_freq: 2,
+            osc1_type: 'sawtooth',
+            osc2_freq: 3.5,
+            osc2_type: 'square',
+            cf_amount: {
+                value: .2,
+                max: 1
+            },
+            cf_mix_length: {
+                value: 0.01,
+                step: 0.01
+            }
         }, opts || {}),
         init: _init.bind(this),
         start: _start.bind(this),
@@ -43,11 +49,11 @@ function _init(config) {
     osc_2.type = this.opts.osc2_type;
     this.opts.osc2_type_enum = generate_osctype_enum(osc_2);
 
-    let cfp = new AudioWorklet(new URL('../worklet/CrossfadingProcessor.js', import.meta.url));
+    let cfp = new AudioWorklet(new URL('../worklet/MixCrossfadingProcessor.js', import.meta.url));
     ctx.audioWorklet.addModule(cfp).then(() => {
         const cfpNode = new AudioWorkletNode(
             ctx,
-            "crossfading-processor",
+            "mix-crossfading-processor",
             {
                 numberOfInputs: 2,
                 numberOfOutputs: 2
@@ -55,8 +61,12 @@ function _init(config) {
         );
 
         let cfp_amout = cfpNode.parameters.get('amount');
-        cfp_amout.value = this.opts.cf_amount;
+        cfp_amout.value = this.opts.cf_amount.value;
         this.opts.cf_amount_param = cfp_amout;
+
+        let cfp_mix_length = cfpNode.parameters.get('mix_length');
+        cfp_mix_length.value = this.opts.cf_mix_length.value;
+        this.opts.cf_mix_length_param = cfp_mix_length;
 
         osc_1.connect(cfpNode);
         osc_2.connect(cfpNode, 0, 1);
@@ -71,14 +81,16 @@ function _init(config) {
             let df = update_docfrag(_DOCFRAG, {
                 opts: {
                     cf_amount: this.opts.cf_amount,
-                    cf_amount_param: this.opts.cf_amount_param
+                    cf_amount_param: this.opts.cf_amount_param,
+                    cf_mix_length: this.opts.cf_mix_length,
+                    cf_mix_length_param: this.opts.cf_mix_length_param
                 }
             }, config);
             config.container.appendChild(df);
         }
     });
 
-    window.Crossfading = this.mod;
+    window.LinearCrossfading = this.mod;
 
     Object.assign(this.mod, {
         osc_1, osc_2
