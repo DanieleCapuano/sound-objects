@@ -53,20 +53,20 @@ function loaded() {
             mg = conf.master_g;
             ctx = conf.ctx;
 
-            console.info("Init module...");
+            console.info("Init module " + select_box.value + "...");
             let doc_frag = init(conf);
             while (controls.firstChild) {
                 controls.removeChild(controls.firstChild);
             }
             controls.appendChild(doc_frag);
 
-            console.info("Starting module...");
+            console.info("Starting module " + select_box.value + "...");
             mg.gain.setValueAtTime(0.0000001, ctx.currentTime);
             start(conf);
             mg.gain.exponentialRampToValueAtTime(1, ctx.currentTime + .25);
         }
         else {
-            console.info("Stopping module...");
+            console.info("Stopping module " + select_box.value + "...");
             mg.gain.setValueAtTime(mg.gain.value, ctx.currentTime);
             mg.gain.exponentialRampToValueAtTime(.000000001, ctx.currentTime + .25);
             setTimeout(() => {

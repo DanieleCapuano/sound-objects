@@ -1,6 +1,7 @@
 export const get_docfrag = _get_docfrag;
 export const update_docfrag = _update_docfrag;
 export const generate_osctype_enum = _generate_osctype_enum;
+export const clear_data = _clear_data;
 
 function _get_docfrag(o, config, custom_get) {
     let d = new DocumentFragment();
@@ -144,4 +145,15 @@ function _generate_osctype_enum(o) {
         values: ['sine', 'triangle', 'square', 'sawtooth'],
         onchange: (val) => o.type = val
     };
+}
+
+function _clear_data(html_container, worklet_node) {
+    if (html_container) {
+        let cnlist = Array.prototype.slice.call(html_container.childNodes);
+        cnlist.forEach(cn => html_container.removeChild(cn));
+    }
+    if (worklet_node) {
+        worklet_node.port.postMessage(false);
+        worklet_node.disconnect();
+    }
 }

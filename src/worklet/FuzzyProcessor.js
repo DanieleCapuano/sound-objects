@@ -4,10 +4,19 @@
 
 //CHannels Phaser - first experiment with audio worklets
 class CHPhaserProcessor extends AudioWorkletProcessor {
+    running = true;
+
+    constructor(...args) {
+        super(...args);
+        this.port.onmessage = (e) => {
+            this.running = e.data;
+        };
+    }
+
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
-        const input = inputs[0][0];
+        const input = (inputs[0] || [])[0] || [];
         let d = new Date().getTime();
         output.forEach((channel, ch_i) => {
             for (let i = 0; i < channel.length; i++) {
@@ -25,7 +34,7 @@ class CHPhaserProcessor extends AudioWorkletProcessor {
         // as this is a source node which generates its own output,
         // we return true so it won't accidentally get garbage-collected
         // if we don't have any references to it in the main thread
-        return true;
+        return this.running;
     }
     // define the customGain parameter used in process method
     static get parameterDescriptors() {

@@ -5,12 +5,21 @@
 //MixCrossfading Processor: it has an "amount" parameter which controls what is 
 //the percentage of the input signal to insert in the output mix
 class MixCrossfadingProcessor extends AudioWorkletProcessor {
+    running = true;
+
+    constructor(...args) {
+        super(...args);
+        this.port.onmessage = (e) => {
+            this.running = e.data;
+        };
+    };
+
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
 
-        const input_1 = inputs[0][0] || [];
-        const input_2 = inputs[1][0] || [];
+        const input_1 = (inputs[0] || [])[0] || [];
+        const input_2 = (inputs[1] || [])[0] || [];
 
         let amount = parameters.amount[0],
             mix_length = parameters.mix_length[0],
@@ -39,13 +48,14 @@ class MixCrossfadingProcessor extends AudioWorkletProcessor {
                 }
 
                 channel[i] = input_a[toggle][i] * smooth + input_a[1 - toggle][i] * (1 - smooth);
+                channel[i] = isNaN(channel[i]) ? 0 : channel[i];
                 percs[toggle] = parseFloat((percs[toggle] + mix_length).toPrecision(2));
             }
         });
         // as this is a source node which generates its own output,
         // we return true so it won't accidentally get garbage-collected
         // if we don't have any references to it in the main thread
-        return true;
+        return this.running;
     }
     // define the customGain parameter used in process method
     static get parameterDescriptors() {

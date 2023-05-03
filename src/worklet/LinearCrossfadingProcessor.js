@@ -4,12 +4,21 @@
 
 //Crossfading Processor
 class LinearCrossfadingProcessor extends AudioWorkletProcessor {
+    running = true;
+
+    constructor(...args) {
+        super(...args);
+        this.port.onmessage = (e) => {
+            this.running = e.data;
+        };
+    };
+
     process(inputs, outputs, parameters) {
         // take the first output
         const output = outputs[0];
 
-        const input_1 = inputs[0][0] || [];
-        const input_2 = inputs[1][0] || [];
+        const input_1 = (inputs[0] || [])[0] || [];
+        const input_2 = (inputs[1] || [])[0] || [];
 
         output.forEach((channel) => {
             for (let i = 0; i < channel.length; i++) {
@@ -31,7 +40,7 @@ class LinearCrossfadingProcessor extends AudioWorkletProcessor {
         // as this is a source node which generates its own output,
         // we return true so it won't accidentally get garbage-collected
         // if we don't have any references to it in the main thread
-        return true;
+        return this.running;
     }
     // define the customGain parameter used in process method
     static get parameterDescriptors() {

@@ -1,6 +1,6 @@
 //solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
 import { AudioWorklet } from "../audio-worklet";
-import { generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
+import { clear_data, generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
 
 ///////////////////////////
 //Fuzzy phaser using audio worklets...quite noisy and fool, 
@@ -40,6 +40,9 @@ function _init(config) {
             }
         );
 
+        let should_update_docfrag = true;
+        if (this.opts.chp_freq_param) should_update_docfrag = false;
+
         let chpFreq = chpNode.parameters.get('frequency');
         chpFreq.value = this.opts.chp_freq;
         this.opts.chp_freq_param = chpFreq;
@@ -52,7 +55,7 @@ function _init(config) {
             chpNode
         });
 
-        if (config.show_docfrag && config.container) {
+        if (config.show_docfrag && config.container && should_update_docfrag) {
             //this might be refactored...
             let df = update_docfrag(_DOCFRAG, {
                 opts: {
@@ -95,6 +98,8 @@ function _start(config) {
     osc.start();
 }
 function _stop(config) {
-    const { osc } = this.mod;
+    const { osc, chpNode } = this.mod;
     osc.stop();
+    clear_data(config.container, chpNode);
+    _DOCFRAG = null;
 }

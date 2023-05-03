@@ -1,6 +1,6 @@
 //solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
 import { AudioWorklet } from "../audio-worklet";
-import { generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
+import { clear_data, generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
 
 ///////////////////////////
 //Linear Crossfading using audio worklets
@@ -53,6 +53,9 @@ function _init(config) {
             }
         );
 
+        let should_update_docfrag = true;
+        if (this.opts.cf_amount_param) should_update_docfrag = false;
+
         let cfp_amout = cfpNode.parameters.get('amount');
         cfp_amout.value = this.opts.cf_amount;
         this.opts.cf_amount_param = cfp_amout;
@@ -65,7 +68,7 @@ function _init(config) {
             cfpNode
         });
 
-        if (config.show_docfrag && config.container) {
+        if (config.show_docfrag && config.container && should_update_docfrag) {
             //this might be refactored...
             let df = update_docfrag(_DOCFRAG, {
                 opts: {
@@ -100,6 +103,8 @@ function _start(config) {
     [osc_1, osc_2].forEach(osc => osc.start());
 }
 function _stop(config) {
-    const { osc_1, osc_2 } = this.mod;
+    const { osc_1, osc_2, cfpNode } = this.mod;
     [osc_1, osc_2].forEach(osc => osc.stop());
+    clear_data(config.container, cfpNode);
+    _DOCFRAG = null;
 }
