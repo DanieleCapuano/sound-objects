@@ -1,6 +1,15 @@
 import * as ops from './op';
 import * as insts from './inst';
 
+/*
+    we cannot import worklets like this because it tries to execute the AudioWorkletProcessor outside a worker so it fails
+    we'll have a list of worklet-based instruments which will execute nodes using worklets
+*/
+// import * as worklets from './worklet';
+
+//solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
+import { AudioWorklet } from "./audio-worklet";
+
 const conf = {};
 window.addEventListener('load', loaded);
 function loaded() {
@@ -33,30 +42,31 @@ function loaded() {
 
     let STARTED = false;
     let mg, ctx;
-    start_bt.addEventListener('click', () => {
+    start_bt.addEventListener('click', async () => {
         if (!STARTED) {
             conf.ctx = conf.ctx || new AudioContext();
             conf.master_g = conf.master_g || conf.ctx.createGain();
             conf.master_g.connect(conf.ctx.destination);
             conf.show_docfrag = true;
+            conf.container = controls;
 
             mg = conf.master_g;
             ctx = conf.ctx;
 
-            console.info("Init module...");
+            console.info("Init module " + select_box.value + "...");
             let doc_frag = init(conf);
             while (controls.firstChild) {
                 controls.removeChild(controls.firstChild);
             }
             controls.appendChild(doc_frag);
 
-            console.info("Starting module...");
+            console.info("Starting module " + select_box.value + "...");
             mg.gain.setValueAtTime(0.0000001, ctx.currentTime);
             start(conf);
             mg.gain.exponentialRampToValueAtTime(1, ctx.currentTime + .25);
         }
         else {
-            console.info("Stopping module...");
+            console.info("Stopping module " + select_box.value + "...");
             mg.gain.setValueAtTime(mg.gain.value, ctx.currentTime);
             mg.gain.exponentialRampToValueAtTime(.000000001, ctx.currentTime + .25);
             setTimeout(() => {

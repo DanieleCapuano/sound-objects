@@ -19,6 +19,15 @@ const config = [{
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
+    parser: {
+      javascript: {
+        worker: [
+          "AudioWorklet from ./audio-worklet",
+          "AudioWorklet from ../audio-worklet",
+          "..."
+        ]
+      }
+    },
     rules: [
       {
         test: /\.(js|jsx)$/i,

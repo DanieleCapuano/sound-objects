@@ -1,8 +1,29 @@
 export const get_docfrag = _get_docfrag;
+export const update_docfrag = _update_docfrag;
 export const generate_osctype_enum = _generate_osctype_enum;
+export const clear_data = _clear_data;
 
 function _get_docfrag(o, config, custom_get) {
     let d = new DocumentFragment();
+
+    Object.keys(o.opts).forEach(opt_key => {
+
+        let /////////////////////////////////////////////////
+            container_param = _get_container(o, config, opt_key, 'param'),
+            container_enum = _get_container(o, config, opt_key, 'enum');
+
+        container_param && d.appendChild(container_param);
+        container_enum && d.appendChild(container_enum);
+    });
+
+    if (custom_get) {
+        d.appendChild(custom_get(o, config));
+    }
+    return d;
+}
+
+function _update_docfrag(docfrag, o, config, custom_get) {
+    let d = docfrag || new DocumentFragment();
 
     Object.keys(o.opts).forEach(opt_key => {
 
@@ -44,7 +65,9 @@ function _get_container(o, config, opt_key, type) {
 
 function _get_param_single_dom(o, config, opt_key, pm, i) {
     const { ctx } = config;
-    let opt_val = pm.value || o.opts[opt_key];
+    let opt_opts = o.opts[opt_key];
+    let opt_val = pm.value || opt_opts;
+    if (typeof opt_val === 'object') opt_val = opt_val.value;
 
     let container = document.createElement('div');
     container.classList.add('container', 'param', opt_key);
@@ -56,8 +79,11 @@ function _get_param_single_dom(o, config, opt_key, pm, i) {
     let input = document.createElement('input');
     input.classList.add('input-val');
     input.setAttribute('type', 'number');
-    input.setAttribute('min', '0');
-    input.setAttribute('step', '0.1');
+    input.setAttribute('min', opt_opts.min || '0');
+    if (opt_opts.max) {
+        input.setAttribute('max', opt_opts.max);
+    }
+    input.setAttribute('step', opt_opts.step || '0.1');
     input.value = opt_val;
     input.addEventListener('change', () => {
         let param = o.opts[opt_key + '_param'];
@@ -119,4 +145,15 @@ function _generate_osctype_enum(o) {
         values: ['sine', 'triangle', 'square', 'sawtooth'],
         onchange: (val) => o.type = val
     };
+}
+
+function _clear_data(html_container, worklet_node) {
+    if (html_container) {
+        let cnlist = Array.prototype.slice.call(html_container.childNodes);
+        cnlist.forEach(cn => html_container.removeChild(cn));
+    }
+    if (worklet_node) {
+        worklet_node.port.postMessage(false);
+        worklet_node.disconnect();
+    }
 }
