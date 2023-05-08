@@ -13,10 +13,10 @@ import { clear_data, generate_osctype_enum, get_docfrag } from "../utils";
 //every input is connected to both channels using different gains, so we can create spatial effects
 ///////////////////////////
 
-export const CHRouterStereo = _CHRouterStereo;
-export default CHRouterStereo;
+export const CHRouter2In6Out = _CHRouter2In6Out;
+export default CHRouter2In6Out;
 
-function _CHRouterStereo(opts) {
+function _CHRouter2In6Out(opts) {
     Object.assign(this, {
         mod: {},
         opts: Object.assign({
@@ -135,7 +135,7 @@ function _init(config) {
     osc_r_gr.gain.value = this.opts.osc_r_gain_r;
     this.opts.osc_r_gain_r_param = osc_r_gr.gain;
 
-    window.CHRouterStereo = this.mod;
+    window.CHRouter2In6Out = this.mod;
 
     Object.assign(this.mod, {
         osc_l,
