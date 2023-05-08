@@ -153,7 +153,10 @@ function _clear_data(html_container, worklet_node) {
         cnlist.forEach(cn => html_container.removeChild(cn));
     }
     if (worklet_node) {
-        worklet_node.port.postMessage(false);
+        worklet_node.port.postMessage({
+            type: 'set_running',
+            value: false
+        });
         worklet_node.disconnect();
     }
 }

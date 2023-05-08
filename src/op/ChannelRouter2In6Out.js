@@ -1,6 +1,12 @@
+/*
+    we cannot import worklets like this because it tries to execute the AudioWorkletProcessor outside a worker so it fails
+    we'll have a list of worklet-based instruments which will execute nodes using worklets
+*/
+// import * as worklets from './worklet';
+
 //solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
 import { AudioWorklet } from "../audio-worklet";
-import { clear_data, generate_osctype_enum, get_docfrag, update_docfrag } from "../utils";
+import { clear_data, generate_osctype_enum, get_docfrag } from "../utils";
 
 ///////////////////////////
 //Channel router: this simply routes 2 inputs on different channels
@@ -21,8 +27,8 @@ function _CHRouterStereo(opts) {
 
             osc_r_freq: 70,
             osc_r_type: 'sine',
-            osc_r_gain_l: .8,
-            osc_r_gain_r: .2,
+            osc_r_gain_l: .2,
+            osc_r_gain_r: .8,
 
         }, opts || {}),
         init: _init.bind(this),
@@ -42,9 +48,29 @@ function _init(config) {
             {
                 numberOfInputs: 2,
                 numberOfOutputs: 1,
-                outputChannelCount: [2]
+                outputChannelCount: [6]
             }
         );
+        chrNode.port.postMessage({
+            type: 'set_channels_mapping',
+            value: {
+                0: 0,
+                1: 1,
+                2: 0,
+                3: 1,
+                4: 0,
+                5: 1
+            }
+        });
+        chrNode.channelCountMode = 'explicit';
+        chrNode.channelInterpretation = 'discrete';
+
+        ctx.destination.channelCount = 6;
+        ctx.destination.channelCountMode = 'explicit';
+        ctx.destination.channelInterpretation = 'discrete';
+        master_g.channelCount = 6;
+        master_g.channelCountMode = 'explicit';
+        master_g.channelInterpretation = 'discrete';
 
         //every input is connected to both channels using different gains, so we can create spatial effects
         osc_l
@@ -137,7 +163,16 @@ function _start(config) {
     [osc_l, osc_r].forEach(osc => osc.start());
 }
 function _stop(config) {
+    const { ctx, master_g, container } = config;
+
+    ctx.destination.channelCount = 2;
+    ctx.destination.channelCountMode = 'max';
+    ctx.destination.channelInterpretation = 'speakers';
+    master_g.channelCount = 2;
+    master_g.channelCountMode = 'max';
+    master_g.channelInterpretation = 'speakers';
+
     const { osc_l, osc_r, chrNode } = this.mod;
     [osc_l, osc_r].forEach(osc => osc.stop());
-    clear_data(config.container, chrNode);
+    clear_data(container, chrNode);
 }

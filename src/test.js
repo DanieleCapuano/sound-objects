@@ -1,15 +1,6 @@
 import * as ops from './op';
 import * as insts from './inst';
 
-/*
-    we cannot import worklets like this because it tries to execute the AudioWorkletProcessor outside a worker so it fails
-    we'll have a list of worklet-based instruments which will execute nodes using worklets
-*/
-// import * as worklets from './worklet';
-
-//solution based on what we found here: https://github.com/webpack/webpack/issues/11543#issuecomment-956055541
-import { AudioWorklet } from "./audio-worklet";
-
 const conf = {};
 window.addEventListener('load', loaded);
 function loaded() {
@@ -46,6 +37,7 @@ function loaded() {
         if (!STARTED) {
             conf.ctx = conf.ctx || new AudioContext();
             conf.master_g = conf.master_g || conf.ctx.createGain();
+
             conf.master_g.connect(conf.ctx.destination);
             conf.show_docfrag = true;
             conf.container = controls;

@@ -6,11 +6,29 @@
 class ChannelRouterProcessor extends AudioWorkletProcessor {
     running = true;
 
+    //keys: output channels (currently up to 6)
+    //values: input connections index whose data will be sent to the corresponding out channel
+    channels_mapping = {
+        0: 0,
+        1: 1,
+        2: 0,
+        3: 1,
+        4: 0,
+        5: 1
+    };
+
     constructor(...args) {
         super(...args);
         this.port.onmessage = (e) => {
-            this.running = e.data;
+            let d = e.data;
+            if (d.type === 'set_running') {
+                this.running = d.value;
+            }
+            else if (d.type === 'set_channels_mapping') {
+                this.channels_mapping = d.value;
+            }
         };
+        console.info(args);
     };
 
     process(inputs, outputs) {
@@ -19,10 +37,13 @@ class ChannelRouterProcessor extends AudioWorkletProcessor {
 
         output.forEach((channel, ch_i) => {
             for (let i = 0; i < channel.length; i++) {
-
-                let inp = (inputs[ch_i] || []),
+                let inp_obj = this.channels_mapping[ch_i],
+                    inp_i = inp_obj !== undefined ? inp_obj : 10,
+                    inp = (inputs[inp_i] || []),
                     inp_ch0 = inp[0] || [];
-                channel[i] = inp_ch0[i] || 0;
+                let val = inp_ch0[i] || 0;
+
+                channel[i] = val;
             }
         });
         // as this is a source node which generates its own output,
