@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 
-<head>
-    <style>
-        canvas {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
-</head>
-
 <body>
-    <!-- <canvas></canvas> -->
     <script src="/em_random_gen.js"></script>
     <script>
         Bindings = {};
@@ -50,32 +40,37 @@
                                 g: context.createGain()
                             }
                         ].forEach((bpo, i, a) => {
-                            bpo.bp.frequency.value = Math.random() * 600 + 40;
-                            bpo.bp.Q.value = 5000;
+                            bpo.bp.type = 'bandpass';
+                            bpo.bp.frequency.value = Math.random() * 400 + 40;
+                            bpo.bp.Q.value = 1000;
 
-                            worklet.connect(bpo.bp).connect(bpo.g).connect(i > 0 ? main_g.gain : main_g);
+                            worklet
+                                .connect(bpo.bp)
+                                .connect(bpo.g)
+                                .connect(main_g);
 
                             let bpn = a.length;
                             let bpog = bpo.g;
-                            bpo.bp.gain.value = 1 / bpn;
                             bpog.gain.setValueAtTime(.0000001, context.currentTime);
-                            bpog.gain.exponentialRampToValueAtTime(1 / (bpn * 2), context.currentTime + 10);
-                            bpog.gain.exponentialRampToValueAtTime(1 / (bpn * 4), context.currentTime + 20);
-                            bpog.gain.exponentialRampToValueAtTime(1 / (bpn * 3), context.currentTime + 30);
-                            bpog.gain.exponentialRampToValueAtTime(1 / (bpn * 2), context.currentTime + 40);
+                            bpog.gain.exponentialRampToValueAtTime((bpn * 4), context.currentTime + 10);
+                            bpog.gain.exponentialRampToValueAtTime((bpn * 8), context.currentTime + 20);
+                            bpog.gain.exponentialRampToValueAtTime((bpn * 6), context.currentTime + 30);
+                            bpog.gain.exponentialRampToValueAtTime((bpn * 4), context.currentTime + 40);
 
                             let bpoq = bpo.bp.Q;
                             bpoq.setValueAtTime(bpoq.value, context.currentTime);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 2000 + 3000, context.currentTime + 10);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 2000 + 3000, context.currentTime + 20);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 2000 + 3000, context.currentTime + 60);
+                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 10);
+                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 20);
+                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 60);
 
                             let bpof = bpo.bp.frequency;
                             bpof.setValueAtTime(bpof.value, context.currentTime);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 600 + 40, context.currentTime + 30);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 600 + 40, context.currentTime + 60);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 600 + 40, context.currentTime + 240);
+                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 30);
+                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 60);
+                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 240);
                         });
+
+                    main_g.gain.value = 20;
                     main_g.connect(context.destination);
                 }
                 document.addEventListener('click', _start);
