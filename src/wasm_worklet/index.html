@@ -6,7 +6,7 @@
         Bindings = {};
         Module.onRuntimeInitialized = () => {
             //this handler will be called from emscripten to initialize the context
-            window.setWorklet = function (context, worklet) {
+            window.setWorklet = function (context, workletNode) {
                 function _start() {
                     document.removeEventListener('click', _start);
                     if (context.state !== "running") {
@@ -44,7 +44,7 @@
                             bpo.bp.frequency.value = Math.random() * 400 + 40;
                             bpo.bp.Q.value = 1000;
 
-                            worklet
+                            workletNode
                                 .connect(bpo.bp)
                                 .connect(bpo.g)
                                 .connect(main_g);
