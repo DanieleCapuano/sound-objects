@@ -1,5 +1,7 @@
 #include "./include/utils.h"
+#include "./include/lib.h"
 
+uint8_t audioThreadStack[4096];
 EMSCRIPTEN_WEBAUDIO_T context;
 
 EM_JS(void, sendAudioContextToUI, (EMSCRIPTEN_WEBAUDIO_T audioContext), {
@@ -16,9 +18,9 @@ void AudioWorkletProcessorCreated(EMSCRIPTEN_WEBAUDIO_T audioContext, EM_BOOL su
 {
   char *wname = (char *)userData;
   string wname_str = wname;
-  processorDef proc = processors[wname_str];
-  EmscriptenAudioWorkletNodeCreateOptions *options = proc.processorOptsGetter();
-  AudioProcessorFunc processorFunc = proc.processorFuncGetter();
+  processorDef *proc = get_processor_by_name(wname_str);
+  EmscriptenAudioWorkletNodeCreateOptions *options = proc->processorOptsGetter();
+  AudioProcessorFunc processorFunc = proc->processorFuncGetter();
 
   // Create node
   EMSCRIPTEN_AUDIO_WORKLET_NODE_T wasmAudioWorklet = emscripten_create_wasm_audio_worklet_node(audioContext,
@@ -47,6 +49,7 @@ extern "C" void initWorklet(char *name)
 
 int main()
 {
+  init_processors();
   context = emscripten_create_audio_context(0);
   sendAudioContextToUI(context);
 }

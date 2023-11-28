@@ -1,5 +1,7 @@
 #include "./include/utils.h"
 
+processorDef noiseDef;
+
 EM_BOOL GenerateNoise(int numInputs, const AudioSampleFrame *inputs,
                       int numOutputs, AudioSampleFrame *outputs,
                       int numParams, const AudioParamFrame *params,
@@ -19,16 +21,22 @@ AudioProcessorFunc NoiseGetProcessorFunc()
 }
 
 // PROCESSOR OPTIONS GETTER
+EmscriptenAudioWorkletNodeCreateOptions options;
 EmscriptenAudioWorkletNodeCreateOptions *NoiseGetWorkletOptions()
 {
-  if (!success)
-    return; // Check browser console in a debug build for detailed errors
-
   int outputChannelCounts[1] = {1};
-  EmscriptenAudioWorkletNodeCreateOptions options = {
+  options = {
       .numberOfInputs = 0,
       .numberOfOutputs = 1,
       .outputChannelCounts = outputChannelCounts};
 
   return &options;
+}
+
+processorDef *get_noise_proc()
+{
+  noiseDef.processorOptsGetter = NoiseGetWorkletOptions;
+  noiseDef.processorFuncGetter = NoiseGetProcessorFunc;
+
+  return &noiseDef;
 }
