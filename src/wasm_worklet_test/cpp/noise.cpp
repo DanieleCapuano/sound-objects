@@ -21,16 +21,18 @@ AudioProcessorFunc NoiseGetProcessorFunc()
 }
 
 // PROCESSOR OPTIONS GETTER
-EmscriptenAudioWorkletNodeCreateOptions options;
-EmscriptenAudioWorkletNodeCreateOptions *NoiseGetWorkletOptions()
+EmscriptenAudioWorkletNodeCreateOptions NoiseGetWorkletOptions()
 {
-  int outputChannelCounts[1] = {1};
+  EmscriptenAudioWorkletNodeCreateOptions options;
+  int *outputChannelCounts = (int *)malloc(sizeof(int));
+  outputChannelCounts[0] = 1;
+
   options = {
       .numberOfInputs = 0,
       .numberOfOutputs = 1,
       .outputChannelCounts = outputChannelCounts};
 
-  return &options;
+  return options;
 }
 
 processorDef *get_noise_proc()

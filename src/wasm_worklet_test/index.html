@@ -5,8 +5,19 @@
     <script>
         Bindings = {};
         Module.onRuntimeInitialized = () => {
+            Bindings.initContext = Module.cwrap('initContext', '', ['']);
+            Bindings.initWorklet = Module.cwrap('initWorklet', '', ['string']);
+
+            let context;
+            window.setContext = function (ctx) {
+                console.info("Got context", ctx);
+                context = ctx;
+                Bindings.initWorklet('noise-generator');
+            };
+
             //this handler will be called from emscripten to initialize the context
-            window.setWorklet = function (context, workletNode) {
+            window.setWorklet = function (wlName, workletNode) {
+                console.info("Getting worklet", wlName);
                 function _start() {
                     document.removeEventListener('click', _start);
                     if (context.state !== "running") {
@@ -14,67 +25,51 @@
                     }
 
                     let main_g = context.createGain(),
-                        bps = [
-                            {
+                        bps = Array
+                            .from(new Array(150).keys())
+                            .map(() => ({
                                 bp: context.createBiquadFilter(),
                                 g: context.createGain()
-                            },
-                            {
-                                bp: context.createBiquadFilter(),
-                                g: context.createGain()
-                            },
-                            {
-                                bp: context.createBiquadFilter(),
-                                g: context.createGain()
-                            },
-                            {
-                                bp: context.createBiquadFilter(),
-                                g: context.createGain()
-                            },
-                            {
-                                bp: context.createBiquadFilter(),
-                                g: context.createGain()
-                            },
-                            {
-                                bp: context.createBiquadFilter(),
-                                g: context.createGain()
-                            }
-                        ].forEach((bpo, i, a) => {
-                            bpo.bp.type = 'bandpass';
-                            bpo.bp.frequency.value = Math.random() * 400 + 40;
-                            bpo.bp.Q.value = 1000;
+                            }))
+                            .forEach((bpo, i, a) => {
+                                bpo.bp.type = 'bandpass';
+                                bpo.bp.frequency.value = Math.random() * 1400 + 20;
+                                bpo.bp.Q.value = 5000;
 
-                            workletNode
-                                .connect(bpo.bp)
-                                .connect(bpo.g)
-                                .connect(main_g);
+                                workletNode
+                                    .connect(bpo.bp)
+                                    .connect(bpo.g)
+                                    .connect(main_g);
 
-                            let bpn = a.length;
-                            let bpog = bpo.g;
-                            bpog.gain.setValueAtTime(.0000001, context.currentTime);
-                            bpog.gain.exponentialRampToValueAtTime((bpn * 4), context.currentTime + 10);
-                            bpog.gain.exponentialRampToValueAtTime((bpn * 8), context.currentTime + 20);
-                            bpog.gain.exponentialRampToValueAtTime((bpn * 6), context.currentTime + 30);
-                            bpog.gain.exponentialRampToValueAtTime((bpn * 4), context.currentTime + 40);
+                                const _dynamics = () => {
+                                    let bpn = a.length;
+                                    let bpog = bpo.g;
+                                    bpog.gain.setValueAtTime(bpog.gain.value, context.currentTime);
+                                    bpog.gain.exponentialRampToValueAtTime((bpn * .02), context.currentTime + 10);
+                                    bpog.gain.exponentialRampToValueAtTime((bpn * .03), context.currentTime + 30);
+                                    bpog.gain.exponentialRampToValueAtTime((bpn * .01), context.currentTime + 60);
 
-                            let bpoq = bpo.bp.Q;
-                            bpoq.setValueAtTime(bpoq.value, context.currentTime);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 10);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 20);
-                            bpoq.exponentialRampToValueAtTime(Math.random() * 1000 + 1000, context.currentTime + 60);
+                                    let bpoq = bpo.bp.Q;
+                                    bpoq.setValueAtTime(bpoq.value, context.currentTime);
+                                    bpoq.exponentialRampToValueAtTime(Math.random() * 6000 + bpn * 1000, context.currentTime + 10);
+                                    bpoq.exponentialRampToValueAtTime(Math.random() * 6000 + bpn * 1000, context.currentTime + 20);
+                                    bpoq.exponentialRampToValueAtTime(Math.random() * 6000 + bpn * 1000, context.currentTime + 60);
 
-                            let bpof = bpo.bp.frequency;
-                            bpof.setValueAtTime(bpof.value, context.currentTime);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 30);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 60);
-                            bpof.exponentialRampToValueAtTime(Math.random() * 400 + 40, context.currentTime + 240);
-                        });
+                                    let bpof = bpo.bp.frequency;
+                                    bpof.setValueAtTime(bpof.value, context.currentTime);
+                                    bpof.exponentialRampToValueAtTime(Math.random() * 1400 + 40, context.currentTime + 30);
+                                    bpof.exponentialRampToValueAtTime(Math.random() * 1400 + 40, context.currentTime + 60);
+                                };
+                                setInterval(_dynamics, Math.random() * 5000 + 60000);
+                                _dynamics();
+                            });
 
                     main_g.gain.value = 20;
                     main_g.connect(context.destination);
                 }
                 document.addEventListener('click', _start);
             };
+            Bindings.initContext();
         };
     </script>
 </body>

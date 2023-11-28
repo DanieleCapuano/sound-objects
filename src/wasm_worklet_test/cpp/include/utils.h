@@ -6,6 +6,9 @@
 #include <map>
 #include <emscripten/webaudio.h>
 #include <emscripten/em_math.h>
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include <emscripten/val.h>
 
 using namespace std;
 
@@ -14,7 +17,7 @@ typedef EM_BOOL (*AudioProcessorFunc)(int, const AudioSampleFrame *,
                                       int, const AudioParamFrame *,
                                       void *);
 typedef AudioProcessorFunc (*AudioProcessorFuncGetter)();
-typedef EmscriptenAudioWorkletNodeCreateOptions *(*AudioProcessorOptionsGetter)();
+typedef EmscriptenAudioWorkletNodeCreateOptions (*AudioProcessorOptionsGetter)();
 
 typedef struct pDef
 {
