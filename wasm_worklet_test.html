@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 
 <body>
-    <script src="/em_random_gen.js"></script>
+    <script>
+        Module = {
+            locateFile: (s) => {
+                return '/wasm-worklet/' + s;
+            }
+        };
+    </script>
+    <script src="/wasm-worklet/wasm_worklets.js"></script>
     <script>
         Bindings = {};
+        Module = Module || {};
         Module.onRuntimeInitialized = () => {
             Bindings.initContext = Module.cwrap('initContext', '', ['']);
             Bindings.initWorklet = Module.cwrap('initWorklet', '', ['string']);

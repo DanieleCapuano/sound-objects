@@ -36,6 +36,7 @@ void AudioThreadInitialized(EMSCRIPTEN_WEBAUDIO_T audioContext, EM_BOOL success,
     return; // Check browser console in a debug build for detailed errors
 
   char *wname = (char *)userData;
+  cout << "Init done for " << wname << endl;
 
   WebAudioWorkletProcessorCreateOptions opts = {
       .name = wname,
@@ -49,6 +50,8 @@ extern "C" void initWorklet(const char *name)
   const int length = s.length();
   char *char_array = new char[length + 1];
   strcpy(char_array, s.c_str());
+
+  cout << "Doing init for processor: " << char_array << endl;
 
   emscripten_start_wasm_audio_worklet_thread_async(context, audioThreadStack, sizeof(audioThreadStack),
                                                    &AudioThreadInitialized, (void *)char_array);

@@ -1,6 +1,0 @@
-1. We need a custom web server because wasm worklets require SharedArrayBuffer which is not allowed anymore unless you set 
-
-'Cross-Origin-Embedder-Policy': 'require-corp',
-'Cross-Origin-Opener-Policy': 'same-origin'
-
-headers on the top document.

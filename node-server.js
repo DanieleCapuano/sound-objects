@@ -11,17 +11,18 @@ if (port == null || port == "") {
     add_header 'Cross-Origin-Embedder-Policy' 'require-corp';
     add_header 'Cross-Origin-Opener-Policy' 'same-origin';
  */
-const _get_index = (path, req) => {
+const _get_index = (is_wasm, path, req) => {
     const res = path.res;
     res.set({
         'Cross-Origin-Embedder-Policy': 'require-corp',
         'Cross-Origin-Opener-Policy': 'same-origin'
     });
-    res.send(fs.readFileSync('./index.html', 'utf8'));
+    res.send(fs.readFileSync(is_wasm ? './wasm_worklet_test.html' : './index.html', 'utf8'));
 };
 
 
 app.get(("/"), _get_index);
+app.get(("/wasm_worklet_test.html"), _get_index.bind(null, true));
 app.get('/:file', function (req, res) {
     fs.readFile(req.params.file, (err, filetext) => {
         if (!err) {
@@ -31,5 +32,7 @@ app.get('/:file', function (req, res) {
     });
 });
 app.use(express.static('.'));
+// app.use(express.static('./dist'));
+// app.use(express.static('./wasm-worklet'));
 
 app.listen(port, () => { console.info("server listening to port " + port) });
