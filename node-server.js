@@ -32,6 +32,14 @@ app.get('/:file', function (req, res) {
 });
 app.use(express.static('.'));
 
-const server = app.listen(0, () => {
-    console.log('Listening on port ' + server.address().port);
-});
+try {
+    app.listen(port, () => {
+        console.log('Listening on port ' + port);
+    });
+}
+catch (e) {
+    //port unavailable: let's try another free port
+    const server = app.listen(0, () => {
+        console.log('Listening on port ' + server.address().port);
+    });
+}
