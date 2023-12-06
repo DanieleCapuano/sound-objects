@@ -75,14 +75,13 @@ function _init(config) {
     osc.type = this.opts.osc_type;
     this.opts.osc_type_enum = generate_osctype_enum(osc);
 
-    window.CHPhaser = this.mod;
-
     Object.assign(this.mod, {
         osc
     });
 
     let ret = this;
     if (config.show_docfrag) {
+        window.CHPhaser = this.mod;
         _DOCFRAG = get_docfrag(this, config);
         ret = _DOCFRAG;
     }

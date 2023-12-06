@@ -100,7 +100,6 @@ function _init(config) {
         Object.assign(this.mod, {
             chrNode
         });
-
     });
 
     let master_l = ctx.createGain(),
@@ -135,8 +134,6 @@ function _init(config) {
     osc_r_gr.gain.value = this.opts.osc_r_gain_r;
     this.opts.osc_r_gain_r_param = osc_r_gr.gain;
 
-    window.CHRouter2In6Out = this.mod;
-
     Object.assign(this.mod, {
         osc_l,
         osc_l_gl,
@@ -148,6 +145,7 @@ function _init(config) {
 
     let ret = this;
     if (config.show_docfrag) {
+        window.CHRouter2In6Out = this.mod;
         ret = get_docfrag(this, config);
     }
     return ret;

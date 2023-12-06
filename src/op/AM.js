@@ -62,9 +62,12 @@ function _init(config) {
         g, carrier, c_g, modulator, m_g
     });
 
-    window.AM = this.mod;
-
-    return config.show_docfrag ? get_docfrag(this, config) : this; 
+    let ret = this;
+    if (config.show_docfrag) {
+        window.AM = this.mod;
+        ret = get_docfrag(this, config);
+    }
+    return ret;
 }
 function _start(config) {
     const { carrier, modulator } = this.mod;

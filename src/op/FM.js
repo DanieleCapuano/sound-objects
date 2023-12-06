@@ -35,7 +35,7 @@ function _init(config) {
 
     carrier.type = this.opts.carrier_type;
     this.opts.carrier_type_enum = generate_osctype_enum(carrier);
-    
+
     modulator.type = this.opts.modulator_type;
     this.opts.modulator_type_enum = generate_osctype_enum(modulator);
 
@@ -97,9 +97,12 @@ function _init(config) {
         }
     });
 
-    window.FM = this.mod;
-
-    return config.show_docfrag ? get_docfrag(this, config, custom_docfrag_nodes) : this;
+    let ret = this;
+    if (config.show_docfrag) {
+        window.FM = this.mod;
+        ret = get_docfrag(this, config, custom_docfrag_nodes);
+    }
+    return ret;
 }
 function _start(config) {
     const { carrier, modulator } = this.mod;

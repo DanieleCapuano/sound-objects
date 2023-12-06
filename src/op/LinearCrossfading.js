@@ -80,14 +80,13 @@ function _init(config) {
         }
     });
 
-    window.LinearCrossfading = this.mod;
-
     Object.assign(this.mod, {
         osc_1, osc_2
     });
 
     let ret = this;
     if (config.show_docfrag) {
+        window.LinearCrossfading = this.mod;
         _DOCFRAG = get_docfrag(this, config);
         ret = _DOCFRAG;
     }

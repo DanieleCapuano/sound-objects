@@ -91,9 +91,12 @@ function _init(config) {
         carrier, c_g, ws
     });
 
-    window.WS = this.mod;
-
-    return config.show_docfrag ? get_docfrag(this, config) : this;
+    let ret = this;
+    if (config.show_docfrag) {
+        window.WS = this.mod;
+        ret = get_docfrag(this, config);
+    }
+    return ret;
 }
 
 //////////////////////////////////////////////
