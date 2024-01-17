@@ -84,6 +84,8 @@ function _init(config) {
                 [objs[0], objs[1]].map(audio => audio.arrayBuffer())
             ).then(bufs => {
                 const o_vals = [this.opts.a1_g, this.opts.a2_g];
+                let bufs_count = bufs.length;
+
                 bufs.forEach((audioData, i) => {
                     ctx.decodeAudioData(audioData, (buffer) => {
                         let bs = ctx.createBufferSource(),
@@ -99,17 +101,10 @@ function _init(config) {
                         lpf.type = 'highpass';
                         lpf.value = 400;
 
-                        if (true) {
-                            bs
-                                .connect(lpf)
-                                .connect(bs_g)
-                                .connect(cfpNode, 0, i);
-                        }
-                        else {
-                            bs
-                                .connect(bs_g)
-                                .connect(cfpNode, 0, i);
-                        }
+                        bs
+                            .connect(lpf)
+                            .connect(bs_g)
+                            .connect(cfpNode, 0, i);
                         cfpNode.connect(master_g);
 
                         Object.assign(this.mod, {
@@ -117,8 +112,8 @@ function _init(config) {
                             ["bs_g_" + i]: bs_g,
                         });
 
-                        if (i === bufs.length - 1) {
-                            setTimeout(res);
+                        if (--bufs_count <= 0) {
+                            res();
                         }
                     });
                 });
